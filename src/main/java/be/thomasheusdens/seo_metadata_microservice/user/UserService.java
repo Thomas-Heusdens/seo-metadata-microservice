@@ -3,6 +3,7 @@ package be.thomasheusdens.seo_metadata_microservice.user;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -19,6 +20,10 @@ public class UserService {
 
     public User findById(Long id) {
         return userRepo.findById(id).orElse(null);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepo.findByUsername(username);
     }
 
     public User createUser(User user) {

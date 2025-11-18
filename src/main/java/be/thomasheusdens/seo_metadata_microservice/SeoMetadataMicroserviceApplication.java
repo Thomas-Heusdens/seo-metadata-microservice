@@ -8,6 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
 public class SeoMetadataMicroserviceApplication {
@@ -17,21 +18,29 @@ public class SeoMetadataMicroserviceApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(UserRepository userRepo, RoleRepository roleRepo) {
+	CommandLineRunner init(UserRepository userRepo, RoleRepository roleRepo, PasswordEncoder encoder) {
 		return args -> {
-			try {
-				if (roleRepo.findByName("ROLE_USER") == null) {
-					roleRepo.save(new Role("ROLE_USER"));
-				}
-				if (!userRepo.existsByEmail("admin@test.com")) {
-					User admin = new User();
-					admin.setEmail("admin@test.com");
-					admin.setPasswordHash("test123");
-					admin.getRoles().add(roleRepo.findByName("ROLE_USER"));
-					userRepo.save(admin);
-				}
-			} catch (Exception e) {
-				System.out.println("SEED ERROR: " + e.getMessage());
+
+			Role userRole = roleRepo.findByName("USER")
+					.orElseGet(() -> roleRepo.save(new Role("USER")));
+
+			Role adminRole = roleRepo.findByName("ADMIN")
+					.orElseGet(() -> roleRepo.save(new Role("ADMIN")));
+
+			if (userRepo.findByUsername("user1").isEmpty()) {
+				User u = new User();
+				u.setUsername("user1");
+				u.setPassword(encoder.encode("password"));
+				u.getRoles().add(userRole);
+				userRepo.save(u);
+			}
+
+			if (userRepo.findByUsername("admin").isEmpty()) {
+				User a = new User();
+				a.setUsername("admin");
+				a.setPassword(encoder.encode("admin"));
+				a.getRoles().add(adminRole);
+				userRepo.save(a);
 			}
 		};
 	}

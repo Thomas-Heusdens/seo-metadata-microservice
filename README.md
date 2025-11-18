@@ -25,10 +25,10 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - User & Role models
 - Seed admin user via `CommandLineRunner`
 - `/users` and `/roles` endpoints for testing
+- role based access to endpoints using accounts from database (test)
 
 ### 🛠️ In Progress
-- Environment variable support (`.env`)
-- Improved documentation (architecture, roadmap, API)
+- JWT authentication (register + login)
 
 ### 🔜 Upcoming
 - JWT authentication (register + login)
@@ -179,3 +179,5 @@ Feel free to reach out for collaboration, feedback, or contributions.
 3. [Lombok Getter and Setter](https://www.javabyexamples.com/delombok-getter-and-setter)
 4. [Spring Boot - Annotations](https://www.geeksforgeeks.org/springboot/spring-boot-annotations/)
 5. [Controller, Service, Repository](https://www.javaguides.net/2023/01/spring-boot-component-controller.html)
+6. [Spring Security Basics (whole playlist)](https://www.youtube.com/watch?v=RabQl8XNt3s&list=PLxhSr_SLdXGOpdX60nHze41CvExvBOn09&index=1)
+7. [PasswordEncoder](https://www.geeksforgeeks.org/advance-java/spring-security-preauthorize-annotation-for-method-security/)

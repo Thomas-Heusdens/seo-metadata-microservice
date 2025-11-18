@@ -20,11 +20,11 @@ public class User {
 
     @Setter
     @Column(unique = true, nullable = false)
-    private String email;
+    private String username;
 
     @Setter
     @Column(nullable = false)
-    private String passwordHash;
+    private String password;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
@@ -40,8 +40,8 @@ public class User {
 
     public User() {}
 
-    public User(String email, String passwordHash) {
-        this.email = email;
-        this.passwordHash = passwordHash;
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
     }
 }
