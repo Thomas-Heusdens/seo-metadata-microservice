@@ -15,7 +15,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAll();

@@ -31,7 +31,6 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - JWT authentication (register + login)
 
 ### 🔜 Upcoming
-- JWT authentication (register + login)
 - Complete SEO scraping module
 - Extended metadata extraction
 - DTO system replacing entity-based API
@@ -44,29 +43,6 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 # 🏗️ Architecture
 
 This project uses a **feature-based MVC architecture**:
-
-```
-user/
- ├── User.java
- ├── Role.java
- ├── UserController.java
- ├── UserService.java
- ├── UserRepository.java
- └── RoleRepository.java
-
-seo/          (future: scraping logic)
-auth/         (future: JWT system)
-scraping/     (future: Jsoup engine)
-config/       (future: security config)
-```
-
-This structure is:
-
-- scalable
-- contributor-friendly
-- aligned with modern Spring Boot practices
-- easier to extend than classical layered architecture
-- intentionally not “pure DDD” because JPA & security require framework annotations
 
 For full architectural details, see:  
 👉 **[ARCHITECTURE.md](./ARCHITECTURE.md)**
@@ -115,6 +91,7 @@ Create a `.env` in the project root:
 DB_URL=jdbc:mysql://host:3306/db
 DB_USERNAME=yourusername
 DB_PASSWORD=yourpassword
+JWT_SECRET_KEY=yourverylongsecretkey
 ```
 
 (Ensure `.env` is in `.gitignore`.)
@@ -134,6 +111,7 @@ Current endpoints (temporary test endpoints):
 - `POST /users`
 - `GET /roles`
 - `POST /roles`
+- `POST /signin`
 
 For full documentation:  
 👉 **[API.md](./API.md)**
@@ -181,3 +159,4 @@ Feel free to reach out for collaboration, feedback, or contributions.
 5. [Controller, Service, Repository](https://www.javaguides.net/2023/01/spring-boot-component-controller.html)
 6. [Spring Security Basics (whole playlist)](https://www.youtube.com/watch?v=RabQl8XNt3s&list=PLxhSr_SLdXGOpdX60nHze41CvExvBOn09&index=1)
 7. [PasswordEncoder](https://www.geeksforgeeks.org/advance-java/spring-security-preauthorize-annotation-for-method-security/)
+8. [JWT GitHub Repository](https://github.com/jwtk/jjwt?tab=readme-ov-file#maven)
