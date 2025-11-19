@@ -3,6 +3,7 @@ package be.thomasheusdens.seo_metadata_microservice.user;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoleService {
@@ -11,6 +12,10 @@ public class RoleService {
 
     public RoleService(RoleRepository roleRepo) {
         this.roleRepo = roleRepo;
+    }
+
+    public Optional<Role> findByName(String roleName) {
+        return roleRepo.findByName(roleName);
     }
 
     public List<Role> findAll() {

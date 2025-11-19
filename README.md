@@ -25,48 +25,25 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - User & Role models
 - Seed admin user via `CommandLineRunner`
 - `/users` and `/roles` endpoints for testing
+- role based access to endpoints using accounts from database (test)
+- JWT authentication (register + login)
 
 ### 🛠️ In Progress
-- Environment variable support (`.env`)
-- Improved documentation (architecture, roadmap, API)
+- Complete SEO scraping module using Jsoup
 
 ### 🔜 Upcoming
-- JWT authentication (register + login)
-- Complete SEO scraping module
 - Extended metadata extraction
 - DTO system replacing entity-based API
 - Rate limiting (unauthenticated limited scans)
 - Full analysis engine (SEO scoring)
 - Optional Vaadin dashboard
+- Optional OAuth 2.0 integration
 
 ---
 
 # 🏗️ Architecture
 
 This project uses a **feature-based MVC architecture**:
-
-```
-user/
- ├── User.java
- ├── Role.java
- ├── UserController.java
- ├── UserService.java
- ├── UserRepository.java
- └── RoleRepository.java
-
-seo/          (future: scraping logic)
-auth/         (future: JWT system)
-scraping/     (future: Jsoup engine)
-config/       (future: security config)
-```
-
-This structure is:
-
-- scalable
-- contributor-friendly
-- aligned with modern Spring Boot practices
-- easier to extend than classical layered architecture
-- intentionally not “pure DDD” because JPA & security require framework annotations
 
 For full architectural details, see:  
 👉 **[ARCHITECTURE.md](./ARCHITECTURE.md)**
@@ -115,6 +92,7 @@ Create a `.env` in the project root:
 DB_URL=jdbc:mysql://host:3306/db
 DB_USERNAME=yourusername
 DB_PASSWORD=yourpassword
+JWT_SECRET_KEY=yourverylongsecretkey
 ```
 
 (Ensure `.env` is in `.gitignore`.)
@@ -134,6 +112,8 @@ Current endpoints (temporary test endpoints):
 - `POST /users`
 - `GET /roles`
 - `POST /roles`
+- `POST /signin`
+- `POST /register`
 
 For full documentation:  
 👉 **[API.md](./API.md)**
@@ -179,3 +159,7 @@ Feel free to reach out for collaboration, feedback, or contributions.
 3. [Lombok Getter and Setter](https://www.javabyexamples.com/delombok-getter-and-setter)
 4. [Spring Boot - Annotations](https://www.geeksforgeeks.org/springboot/spring-boot-annotations/)
 5. [Controller, Service, Repository](https://www.javaguides.net/2023/01/spring-boot-component-controller.html)
+6. [Spring Security Basics (whole playlist)](https://www.youtube.com/watch?v=RabQl8XNt3s&list=PLxhSr_SLdXGOpdX60nHze41CvExvBOn09&index=1)
+7. [PasswordEncoder](https://www.geeksforgeeks.org/advance-java/spring-security-preauthorize-annotation-for-method-security/)
+8. [JWT GitHub Repository](https://github.com/jwtk/jjwt?tab=readme-ov-file#maven)
+9. [CORS::Spring Framework](https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html)

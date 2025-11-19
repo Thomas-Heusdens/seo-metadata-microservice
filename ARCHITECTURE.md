@@ -13,20 +13,39 @@ The project follows a **feature-based MVC(S)** structure:
 ```
 seo-metadata-microservice/
  ├── user/
- │    ├── User.java
- │    ├── Role.java
- │    ├── UserService.java
- │    ├── RoleService.java
- │    ├── UserRepository.java
- │    ├── RoleRepository.java
- │    ├── UserController.java
- │    └── RoleController.java
+ │    ├── User.java                    # User entity with roles + password hashing
+ │    ├── Role.java                    # Role entity (USER / ADMIN)
+ │    ├── UserService.java             # Business logic for users
+ │    ├── RoleService.java             # Business logic for roles
+ │    ├── UserRepository.java          # JPA repo for User
+ │    ├── RoleRepository.java          # JPA repo for Role
+ │    ├── UserController.java          # REST API for fetching users
+ │    └── RoleController.java          # REST API for managing roles
  │
- ├── config/        (later: security, CORS, JWT)
- ├── seo/           (later: SEO extraction, Jsoup logic)
- ├── scraping/      (later: metadata scraping engine)
- ├── auth/          (later: authentication + JWT)
- └── application root files
+ ├── security/
+ │    ├── SecurityConfiguration.java     # Spring Security config, JWT filter, RBAC, CORS enabled
+ │    ├── CustomUserDetailsService.java  # Loads user details + roles from DB for authentication
+ │    └── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
+ │
+ ├── auth/
+ │    ├── AuthController.java            # Handles /api/auth/signin and /api/auth/register
+ │    ├── LoginRequest.java              # DTO: login username + password
+ │    ├── LoginResponse.java             # DTO: username, roles, JWT token
+ │    ├── RegisterRequest.java           # DTO: registration username + password
+ │    └── RegisterResponse.java          # DTO: server response after user registration
+ │
+ ├── jwt/
+ │    ├── JwtUtils.java                  # generate/validate tokens
+ │    ├── AuthTokenFilter.java           # extracts JWT from headers
+ │    └── AuthEntryPointJwt.java         # handles unauthorized errors
+ │
+ ├── seo/                                # (future) HTML parsing logic
+ ├── scraping/                           # (future) metadata extraction engine
+ │
+ ├── SeoMetadataMicroserviceApplication.java
+ ├── application.properties
+ ├── .env
+ └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE)
 ```
 
 This approach organizes the code **per feature/domain**, not per technical layer, which is more scalable and easier for contributors to understand.
@@ -118,12 +137,14 @@ This keeps controllers thin and maintainable.
 
 ## **4. Controllers (REST API Layer)**
 
-`UserController` and `RoleController` expose REST endpoints:
+`UserController`, `RoleController`, and `LoginController` expose REST endpoints:
 
 - `GET /users`
 - `POST /users`
 - `GET /roles`
 - `POST /roles`
+- `POST /signin`
+- `POST /register`
 
 At this stage, these controllers serve as **testing endpoints** for:
 
@@ -143,13 +164,13 @@ These endpoints will later be replaced with:
 
 ## **5. Configuration (Spring Boot / Security)**
 
-Will include later:
+Include:
 
 - JWT token provider
 - Authentication filters
 - WebSecurityConfig
 - Password encoders
-- CORS settings
+- CORS settings (Future)
 
 ---
 
@@ -170,34 +191,32 @@ Later features:
 # 📌 Data Flow Diagram
 
 ```
-HTTP Request
-     │
-     ▼
-Controller  ← DTO (later)
-     │
-     ▼
-Service (business logic)
-     │
-     ▼
-Repository (Spring Data JPA)
-     │
-     ▼
-Database (MySQL)
+               ┌────────────────────────┐
+HTTP Request → │  AuthTokenFilter (JWT) │
+               └────────────────────────┘
+                           │
+                           ▼
+               ┌────────────────────────┐
+               │ SecurityContextHolder   │
+               │ (Authentication + Roles)│
+               └────────────────────────┘
+                           │
+                           ▼
+                    Authorization?
+                (PreAuthorize, RBAC check)
+                           │
+         if ok ────────────┘
+                           ▼
+                  ┌────────────────┐
+                  │   Controller   │
+                  └────────────────┘
+                           │
+                           ▼
+        (DTO mapping)  →  Service Layer
+                           │
+                           ▼
+                     Repository Layer
+                           │
+                           ▼
+                        MySQL DB
 ```
-
----
-
-# 📌 Summary
-
-This architecture is:
-
-- simple
-- scalable
-- open-source friendly
-- Spring Boot idiomatic
-- compatible with JPA & Security requirements
-- easy for contributors
-- ready for future DDD-light improvements
-
-A full DDD/Hexagonal approach is intentionally avoided to keep the microservice lightweight and aligned with its purpose.
-
