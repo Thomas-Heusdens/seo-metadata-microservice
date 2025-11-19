@@ -26,17 +26,18 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Seed admin user via `CommandLineRunner`
 - `/users` and `/roles` endpoints for testing
 - role based access to endpoints using accounts from database (test)
-
-### 🛠️ In Progress
 - JWT authentication (register + login)
 
+### 🛠️ In Progress
+- Complete SEO scraping module using Jsoup
+
 ### 🔜 Upcoming
-- Complete SEO scraping module
 - Extended metadata extraction
 - DTO system replacing entity-based API
 - Rate limiting (unauthenticated limited scans)
 - Full analysis engine (SEO scoring)
 - Optional Vaadin dashboard
+- Optional OAuth 2.0 integration
 
 ---
 
@@ -112,6 +113,7 @@ Current endpoints (temporary test endpoints):
 - `GET /roles`
 - `POST /roles`
 - `POST /signin`
+- `POST /register`
 
 For full documentation:  
 👉 **[API.md](./API.md)**
@@ -160,3 +162,4 @@ Feel free to reach out for collaboration, feedback, or contributions.
 6. [Spring Security Basics (whole playlist)](https://www.youtube.com/watch?v=RabQl8XNt3s&list=PLxhSr_SLdXGOpdX60nHze41CvExvBOn09&index=1)
 7. [PasswordEncoder](https://www.geeksforgeeks.org/advance-java/spring-security-preauthorize-annotation-for-method-security/)
 8. [JWT GitHub Repository](https://github.com/jwtk/jjwt?tab=readme-ov-file#maven)
+9. [CORS::Spring Framework](https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html)

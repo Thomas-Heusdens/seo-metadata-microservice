@@ -1,6 +1,10 @@
 package be.thomasheusdens.seo_metadata_microservice.auth;
 
 import be.thomasheusdens.seo_metadata_microservice.jwt.JwtUtils;
+import be.thomasheusdens.seo_metadata_microservice.user.Role;
+import be.thomasheusdens.seo_metadata_microservice.user.RoleRepository;
+import be.thomasheusdens.seo_metadata_microservice.user.User;
+import be.thomasheusdens.seo_metadata_microservice.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,8 +15,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
@@ -20,8 +26,14 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-public class LoginController {
-
+@RequestMapping("/api/auth")
+public class AuthController {
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtUtils jwtUtils;
     @Autowired
@@ -52,5 +64,35 @@ public class LoginController {
         LoginResponse response = new LoginResponse(userDetails.getUsername(), roles, jwtToken);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> registerUser(@RequestBody RegisterRequest registerRequest) {
+        if (registerRequest.getUsername() == null || registerRequest.getPassword() == null) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Username and password are required");
+        }
+        if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Username is already taken");
+        }
+
+        User user = new User();
+        user.setUsername(registerRequest.getUsername());
+        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new RuntimeException("Role USER not found"));
+
+        user.getRoles().add(userRole);
+
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new RegisterResponse(
+                "User successfully registered",
+                user.getUsername()
+        ));
     }
 }

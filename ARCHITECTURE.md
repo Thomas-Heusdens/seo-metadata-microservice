@@ -13,31 +13,34 @@ The project follows a **feature-based MVC(S)** structure:
 ```
 seo-metadata-microservice/
  ├── user/
- │    ├── User.java
- │    ├── Role.java
- │    ├── UserRepository.java
- │    ├── RoleRepository.java
- │    ├── UserService.java
- │    ├── RoleService.java
- │    ├── UserController.java
- │    └── RoleController.java
+ │    ├── User.java                    # User entity with roles + password hashing
+ │    ├── Role.java                    # Role entity (USER / ADMIN)
+ │    ├── UserService.java             # Business logic for users
+ │    ├── RoleService.java             # Business logic for roles
+ │    ├── UserRepository.java          # JPA repo for User
+ │    ├── RoleRepository.java          # JPA repo for Role
+ │    ├── UserController.java          # REST API for fetching users
+ │    └── RoleController.java          # REST API for managing roles
  │
  ├── security/
- │    ├── SecurityConfiguration.java
- │    └── CustomUserDetailsService.java
+ │    ├── SecurityConfiguration.java     # Spring Security config, JWT filter, RBAC, CORS enabled
+ │    ├── CustomUserDetailsService.java  # Loads user details + roles from DB for authentication
+ │    └── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
  │
  ├── auth/
- │    ├── LoginController.java         # /api/auth/signin
- │    ├── LoginRequest.java            # username + password DTO
- │    └── LoginResponse.java           # returns JWT token
+ │    ├── AuthController.java            # Handles /api/auth/signin and /api/auth/register
+ │    ├── LoginRequest.java              # DTO: login username + password
+ │    ├── LoginResponse.java             # DTO: username, roles, JWT token
+ │    ├── RegisterRequest.java           # DTO: registration username + password
+ │    └── RegisterResponse.java          # DTO: server response after user registration
  │
  ├── jwt/
- │    ├── JwtUtils.java                # generate/validate tokens
- │    ├── AuthTokenFilter.java         # extracts JWT from headers
- │    └── AuthEntryPointJwt.java       # handles unauthorized errors
+ │    ├── JwtUtils.java                  # generate/validate tokens
+ │    ├── AuthTokenFilter.java           # extracts JWT from headers
+ │    └── AuthEntryPointJwt.java         # handles unauthorized errors
  │
- ├── seo/                              # (future) HTML parsing logic
- ├── scraping/                         # (future) metadata extraction engine
+ ├── seo/                                # (future) HTML parsing logic
+ ├── scraping/                           # (future) metadata extraction engine
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
@@ -141,6 +144,7 @@ This keeps controllers thin and maintainable.
 - `GET /roles`
 - `POST /roles`
 - `POST /signin`
+- `POST /register`
 
 At this stage, these controllers serve as **testing endpoints** for:
 
