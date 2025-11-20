@@ -27,12 +27,13 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - `/users` and `/roles` endpoints for testing
 - role based access to endpoints using accounts from database (test)
 - JWT authentication (register + login)
+- Complete SEO scraping module using Jsoup
+- Extended metadata extraction
 
 ### 🛠️ In Progress
-- Complete SEO scraping module using Jsoup
+- Analysis of the extracted metadata (logic)
 
 ### 🔜 Upcoming
-- Extended metadata extraction
 - DTO system replacing entity-based API
 - Rate limiting (unauthenticated limited scans)
 - Full analysis engine (SEO scoring)
@@ -82,7 +83,7 @@ For full architectural details, see:
 
 ## 1. Clone the project
 ```bash
-git clone https://github.com/yourusername/seo-metadata-microservice.git
+git clone https://github.com/thomas-heusdens/seo-metadata-microservice.git
 ```
 
 ## 2. Configure environment variables
@@ -110,10 +111,12 @@ Current endpoints (temporary test endpoints):
 
 - `GET /users`
 - `POST /users`
+- `get /users/{id}`
 - `GET /roles`
 - `POST /roles`
-- `POST /signin`
-- `POST /register`
+- `POST /api/auth/signin`
+- `POST /api/auth/register`
+- `GET /api/scraper/extract`
 
 For full documentation:  
 👉 **[API.md](./API.md)**
@@ -163,3 +166,5 @@ Feel free to reach out for collaboration, feedback, or contributions.
 7. [PasswordEncoder](https://www.geeksforgeeks.org/advance-java/spring-security-preauthorize-annotation-for-method-security/)
 8. [JWT GitHub Repository](https://github.com/jwtk/jjwt?tab=readme-ov-file#maven)
 9. [CORS::Spring Framework](https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html)
+10. [Web Scrapping in Java with Jsoup (Basics)](https://www.youtube.com/watch?v=riZ2GAaMDGM)
+11. [Jsoup official documentation](https://jsoup.org/cookbook/input/load-document-from-url)

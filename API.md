@@ -1,109 +1,197 @@
 # 📡 API Reference — SEO Metadata Microservice
 
-This document lists the currently available API endpoints.  
-These endpoints exist primarily for **internal testing** while the database, MVC structure, and services are being built.
+This API Reference describes the current endpoints of the **SEO Metadata Microservice**, including authentication, user/role management (admin only), and future SEO scraping endpoints.
 
-Later, these will be replaced by:
-
-- `/auth/login`
-- `/auth/register`
-- `/seo/scrape`
-- `/seo/metadata`
-- `/seo/analyze`
+The project is currently in **Version 0.2.0 — Authentication & Security**.
 
 ---
 
-# 📌 Current Endpoints (Development Stage)
+# 🔐 Authentication Endpoints (`/auth`)
 
-## 🟦 Users
+These endpoints handle **user registration**, **login**, and **JWT token generation**.
 
-### **GET /users**
+---
+
+## ✔ **POST /api/auth/register**
+
+Creates a new user account.
+Automatically assigns role: **ROLE_USER**.
+
+**Request body:**
+
+```json
+{
+  "username": "thomas",
+  "password": "password123"
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": 3,
+  "username": "thomas",
+  "roles": ["ROLE_USER"]
+}
+```
+
+**Access:**
+🟢 Public (no token required)
+
+---
+
+## ✔ **POST /api/auth/login**
+
+Authenticates a user and returns a signed **JWT token**.
+
+**Request body:**
+
+```json
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+
+**Response:**
+
+```json
+{
+  "username": "admin",
+  "roles": ["ROLE_ADMIN"],
+  "jwtToken": "eyJhbGciOiJIUzUxMiJ9..."
+}
+```
+
+**Access:**
+🟢 Public
+
+Use the returned token for all protected endpoints:
+
+```
+Authorization: Bearer <jwt-token>
+```
+
+---
+
+# 👥 Users API (`/users`)
+
+These endpoints are **ADMIN-only** and currently exist primarily for internal testing.
+
+---
+
+## 🔐 **GET /users**
+
 Returns all users.
 
-Example response:
+**Access:**
+🔴 Requires: `ROLE_ADMIN`
+
+```java
+@PreAuthorize("hasRole('ADMIN')")
+```
+
+---
+
+## 🔐 **GET /users/{id}**
+
+Returns a user by ID.
+
+**Access:**
+🔴 Requires: `ROLE_ADMIN`
+
+---
+
+## 🔐 **POST /users**
+
+Creates a user **without validation** (temporary for testing).
+
+**Access:**
+🔴 Requires: `ROLE_ADMIN`
+
+---
+
+# 🏷 Roles API (`/roles`)
+
+Internal-only testing endpoints for managing roles.
+
+---
+
+## 🔐 **GET /roles**
+
+Returns all available roles.
+
+**Access:**
+🔴 Requires: `ROLE_ADMIN`
+(You can decide later if you want this public.)
+
+---
+
+## 🔐 **POST /roles**
+
+Creates a new role.
+
+Example:
+
 ```json
-[
-  {
-    "id": 1,
-    "email": "admin@test.com",
-    "passwordHash": "test123",
-    "roles": [
-      {"id": 1, "name": "ROLE_USER"}
-    ],
-    "createdAt": "2025-11-17T15:10:00"
+{
+  "name": "ROLE_MODERATOR"
+}
+```
+
+**Access:**
+🔴 Requires: `ROLE_ADMIN`
+
+---
+
+Absolutely — here is a **clean, corrected version** of the API Reference section, updated to reflect:
+
+✔ Jsoup scraping **is now implemented**
+✔ Metadata extraction endpoint exists
+✔ No speculation about future endpoints
+✔ No roadmap section (since it's in README)
+✔ Only actual, working endpoints documented
+
+---
+
+# 🧪 scraper API
+
+These endpoints allow authenticated users to extract metadata from any public webpage using **Jsoup**.
+
+---
+
+## 🟦 **POST /api/scraper/scrape**
+
+Extracts metadata (title, description, favicon, and other `<meta>` tags) from a given URL.
+
+**Request body:**
+
+```json
+{
+  "url": "https://www.apple.com/"
+}
+```
+
+**Example successful response:**
+
+```json
+{
+  "url": "https://www.apple.com/",
+  "title": "Apple",
+  "description": "Discover the innovative world of Apple...",
+  "favicon": "https://www.apple.com/favicon.ico",
+  "metaTags": {
+    "og:title": "Apple",
+    "og:description": "Discover the innovative world of Apple",
+    "twitter:card": "summary_large_image"
   }
-]
-```
-
----
-
-### **GET /users/{id}**
-Returns user by ID.
-
----
-
-### **POST /users**
-Creates a user (currently accepts full entity for testing purposes).
-
-Example body:
-```json
-{
-  "email": "test@test.com",
-  "passwordHash": "12345"
 }
 ```
 
----
+**Access:**
+🟣 Requires authentication
 
-## 🟩 Roles
-
-### **GET /roles**
-Returns all roles.
-
----
-
-### **POST /roles**
-Creates a role.
-
-Example body:
-```json
-{
-  "name": "ROLE_ADMIN"
-}
+```java
+@PreAuthorize("isAuthenticated()")
 ```
-
----
-
-# 📌 Authentication
-
-⚠️ Not implemented yet.  
-Final API will include:
-
-- `POST /auth/register`
-- `POST /auth/login`
-- JWT-based authentication
-- Role-based permissions
-
----
-
-# 📌 SEO Endpoints
-
-⚠️ Not implemented yet.  
-Final API will include:
-
-- `POST /seo/scrape`
-- `GET /seo/metadata/{id}`
-- `POST /seo/analyze`
-
----
-
-# 📌 Notes
-
-These endpoints are primarily for:
-
-- validating database connection
-- validating Hibernate schema generation
-- verifying controllers and services
-- testing with Postman
-
-Official API endpoints will be added after authentication and DTO layers are implemented.

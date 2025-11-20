@@ -40,7 +40,11 @@ seo-metadata-microservice/
  │    └── AuthEntryPointJwt.java         # handles unauthorized errors
  │
  ├── seo/                                # (future) HTML parsing logic
- ├── scraping/                           # (future) metadata extraction engine
+ │                              
+ ├── scraping/                           # metadata extraction engine
+ │    ├── SeoController.java             # contains /api/scraper/extract endpoint
+ │    ├── SeoMetadata.java               # DTO for extracting metadata
+ │    └── SeoService.java                # Logic to extract metadata using Jsoup
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
@@ -137,34 +141,22 @@ This keeps controllers thin and maintainable.
 
 ## **4. Controllers (REST API Layer)**
 
-`UserController`, `RoleController`, and `LoginController` expose REST endpoints:
+`UserController`, `RoleController`, `AuthController`, and `SeoController` expose REST endpoints:
 
 - `GET /users`
 - `POST /users`
+- `get /users/{id}`
 - `GET /roles`
 - `POST /roles`
-- `POST /signin`
-- `POST /register`
-
-At this stage, these controllers serve as **testing endpoints** for:
-
-✔ verifying DB connection  
-✔ verifying Hibernate schema generation  
-✔ verifying repositories and services  
-✔ verifying Spring Web MVC
-
-These endpoints will later be replaced with:
-
-- `/auth/register`
-- `/auth/login`
-- `/seo/scrape`
-- `/seo/metadata/{id}`
+- `POST /api/auth/signin`
+- `POST /api/auth/register`
+- `GET /api/scraper/extract`
 
 ---
 
 ## **5. Configuration (Spring Boot / Security)**
 
-Include:
+Includes:
 
 - JWT token provider
 - Authentication filters
@@ -176,13 +168,16 @@ Include:
 
 ## **6. SEO Scraping (Jsoup)**
 
-Later features:
+Includes:
 
 - fetching HTML from target URLs
 - extracting titles, meta descriptions, canonical URLs
 - extracting OpenGraph metadata
 - extracting JSON-LD structures
 - hreflang detection
+
+Later features:
+
 - storing SEO results in DB
 - returning structured DTO responses
 
