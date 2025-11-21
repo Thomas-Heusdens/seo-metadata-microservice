@@ -6,17 +6,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SeoController {
+public class ScraperController {
 
-    private final SeoService seoService;
+    private final ScraperService scraperService;
 
-    public SeoController(SeoService seoService) {
-        this.seoService = seoService;
+    public ScraperController(ScraperService scraperService) {
+        this.scraperService = scraperService;
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/api/scraper/extract")
-    public SeoMetadata extract(@RequestParam String url) throws Exception {
-        return seoService.extractMetadata(url);
+    public ScraperMetadata extract(@RequestParam String url) throws Exception {
+        return scraperService.extractMetadata(url);
     }
 }

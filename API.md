@@ -1,23 +1,31 @@
-# 📡 API Reference — SEO Metadata Microservice
+# ✅ **UPDATED API REFERENCE (ready to paste)**
 
-This API Reference describes the current endpoints of the **SEO Metadata Microservice**, including authentication, user/role management (admin only), and future SEO scraping endpoints.
-
-The project is currently in **Version 0.2.0 — Authentication & Security**.
+Includes the fully implemented scraping endpoint + cleaned structure.
 
 ---
 
-# 🔐 Authentication Endpoints (`/auth`)
+# 📡 API Reference — SEO Metadata Microservice
 
-These endpoints handle **user registration**, **login**, and **JWT token generation**.
+This API Reference documents the currently available endpoints of the **SEO Metadata Microservice**, including authentication, user/role management, and SEO metadata extraction.
+
+The project is currently in:
+
+**Version 1.0.0 — Stable Release (Authentication + Scraper Prototype)**
+
+---
+
+# 🔐 Authentication Endpoints (`/api/auth`)
+
+These endpoints handle registration, login, and JWT token generation.
 
 ---
 
 ## ✔ **POST /api/auth/register**
 
 Creates a new user account.
-Automatically assigns role: **ROLE_USER**.
+Default role: **ROLE_USER**
 
-**Request body:**
+### Request
 
 ```json
 {
@@ -26,7 +34,7 @@ Automatically assigns role: **ROLE_USER**.
 }
 ```
 
-**Response:**
+### Response
 
 ```json
 {
@@ -36,16 +44,15 @@ Automatically assigns role: **ROLE_USER**.
 }
 ```
 
-**Access:**
-🟢 Public (no token required)
+**Access:** Public
 
 ---
 
 ## ✔ **POST /api/auth/login**
 
-Authenticates a user and returns a signed **JWT token**.
+Authenticates the user and returns a signed JWT token.
 
-**Request body:**
+### Request
 
 ```json
 {
@@ -54,7 +61,7 @@ Authenticates a user and returns a signed **JWT token**.
 }
 ```
 
-**Response:**
+### Response
 
 ```json
 {
@@ -64,67 +71,50 @@ Authenticates a user and returns a signed **JWT token**.
 }
 ```
 
-**Access:**
-🟢 Public
+**Access:** Public
 
-Use the returned token for all protected endpoints:
-
-```
-Authorization: Bearer <jwt-token>
-```
+Use the token for all protected endpoints:
+`Authorization: Bearer <token>`
 
 ---
 
 # 👥 Users API (`/users`)
 
-These endpoints are **ADMIN-only** and currently exist primarily for internal testing.
+Admin-only internal endpoints.
 
 ---
 
 ## 🔐 **GET /users**
 
 Returns all users.
-
-**Access:**
-🔴 Requires: `ROLE_ADMIN`
-
-```java
-@PreAuthorize("hasRole('ADMIN')")
-```
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-## 🔐 **GET /users/{id}**
+## 🔐 **GET /users/{id}`**
 
 Returns a user by ID.
-
-**Access:**
-🔴 Requires: `ROLE_ADMIN`
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
 ## 🔐 **POST /users**
 
-Creates a user **without validation** (temporary for testing).
-
-**Access:**
-🔴 Requires: `ROLE_ADMIN`
+Creates a new user without validation.
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
 # 🏷 Roles API (`/roles`)
 
-Internal-only testing endpoints for managing roles.
+Admin-only endpoints for managing roles.
 
 ---
 
 ## 🔐 **GET /roles**
 
-Returns all available roles.
-
-**Access:**
-🔴 Requires: `ROLE_ADMIN`
-(You can decide later if you want this public.)
+Returns all roles.
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
@@ -132,7 +122,7 @@ Returns all available roles.
 
 Creates a new role.
 
-Example:
+### Request
 
 ```json
 {
@@ -140,57 +130,49 @@ Example:
 }
 ```
 
-**Access:**
-🔴 Requires: `ROLE_ADMIN`
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-Absolutely — here is a **clean, corrected version** of the API Reference section, updated to reflect:
+# 🧪 Scraper API (`/api/scraper`)
 
-✔ Jsoup scraping **is now implemented**
-✔ Metadata extraction endpoint exists
-✔ No speculation about future endpoints
-✔ No roadmap section (since it's in README)
-✔ Only actual, working endpoints documented
+Endpoints for extracting metadata from any public webpage.
 
 ---
 
-# 🧪 scraper API
+## 🟦 **GET /api/scraper/extract**
 
-These endpoints allow authenticated users to extract metadata from any public webpage using **Jsoup**.
+Extracts SEO metadata using Jsoup based on a URL.
 
----
+### Example Request:
 
-## 🟦 **POST /api/scraper/scrape**
-
-Extracts metadata (title, description, favicon, and other `<meta>` tags) from a given URL.
-
-**Request body:**
-
-```json
-{
-  "url": "https://www.apple.com/"
-}
+```
+GET /api/scraper/extract?url=https://skwd.be
 ```
 
-**Example successful response:**
+### Example Response (shortened):
 
 ```json
 {
-  "url": "https://www.apple.com/",
-  "title": "Apple",
-  "description": "Discover the innovative world of Apple...",
-  "favicon": "https://www.apple.com/favicon.ico",
-  "metaTags": {
-    "og:title": "Apple",
-    "og:description": "Discover the innovative world of Apple",
-    "twitter:card": "summary_large_image"
-  }
+  "url": "https://skwd.be",
+  "title": "SKWD",
+  "description": "Student staffing agency...",
+  "canonicalUrl": "https://skwd.be",
+  "ogTitle": "SKWD – Student Staffing",
+  "h1": "Welcome to SKWD",
+  "h2List": ["Staffing Agency", "Our Services"],
+  "robots": "index,follow",
+  "viewport": "width=device-width, initial-scale=1",
+  "jsonLdList": ["{...}"],
+  "internalLinksCount": 42,
+  "externalLinksCount": 10,
+  "missingAltCount": 3,
+  "wordCount": 1020
 }
 ```
 
 **Access:**
-🟣 Requires authentication
+🔒 Requires authentication
 
 ```java
 @PreAuthorize("isAuthenticated()")

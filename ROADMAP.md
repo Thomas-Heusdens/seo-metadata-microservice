@@ -1,62 +1,76 @@
-# 🗺️ **Project Roadmap — SEO Metadata Microservice**
+# 🗺️ Project Roadmap — SEO Metadata Microservice
 
-This roadmap tracks major milestones completed across versions and highlights the current and upcoming development focus.
-
----
-
-# ✅ **Version 0.1.0 — Initial Bootstrapping (COMPLETED)**
-
-* Spring Boot setup
-* MySQL connection & Hibernate/JPA configuration
-* Automatic schema generation
-* User & Role entities + repositories
-* Basic service layer
-* Testing controllers (`/users`, `/roles`)
-* Initial architecture (MVC(S))
-* Environment variables support (`.env`)
-* Foundation documentation created (README, Architecture, API, Roadmap)
+This roadmap outlines the major progression of the project and the development focus for upcoming versions.
 
 ---
 
-# ✅ **Version 0.2.0 — Authentication Layer (COMPLETED)**
+# ✅ **Version 1.0.0 — Stable Prototype Release (NEW)**
 
-### 🔐 **Security Core**
+*(Wraps all versions 0.1.0 → 0.4.0)*
 
-* Introduced role-based access control (RBAC)
-* Implemented `CustomUserDetailsService`
-* Secured endpoints using `@PreAuthorize`
-* Added CORS configuration (`CorsConfig`)
-* Introduced password hashing (BCrypt)
+### 🔧 Contains everything from previous milestones:
 
-### 🔑 **JWT Authentication**
+#### 🔹 Bootstrapping
 
-* Implemented JWT token generation & validation (`JwtUtils`)
-* Added `AuthTokenFilter` for token extraction + authentication context
-* Added `AuthEntryPointJwt` for 401/403 handling
-* Implemented `/api/auth/login` endpoint
-* Implemented `/api/auth/register` endpoint (default ROLE_USER)
+* Spring Boot + Maven setup
+* MySQL + Hibernate/JPA
+* MVC architecture
+* Entities + Repositories
+* Environment variable support
 
-### 🔒 **Security Result**
+#### 🔹 Authentication System
 
-* API now fully supports secure login, registration, and token-based access
-* All private endpoints require JWT authentication
+* JWT login + registration
+* BCrypt password encryption
+* Role-based access control
+* Security filters + exception handler
+* Admin-only user & role management endpoints
+
+#### 🔹 Scraper Prototype
+
+* Full Jsoup integration
+* Complete metadata extraction service
+* JSON-LD support
+* Image/alt scanning
+* Word count analysis
+* H1/H2 structure extraction
+* Robots, viewport, Apple touch icon
+* Twitter + Open Graph metadata
+* `/api/scraper/extract` and `/api/scraper/analyze` endpoint
+
+### 🎉 Result:
+
+**Fully working secured API + first complete SEO metadata extraction engine.**
 
 ---
 
-# 🎯 **Version 0.3.0 — SEO Scraper (COMPLETED)**
+# 🎯 **Version 2.0.0 — Online Presence Comparison Engine (UPCOMING)**
 
-### 🕸 **Jsoup Integration**
+### 🔜 Planned features:
 
-* Added `scraper` package containing Jsoup extraction logic
-* Implemented core metadata extraction (title, description, meta tags, favicon)
+* Compare **two URLs side-by-side**
+* Determine strengths/weaknesses (your site vs competitor)
+* Provide “SEO coaching tips” using structured rules
+* Score metadata quality (0–100) -> not sure
+* Detect missing critical tags vs reference
+* Return comparison DTO
+* Add Vaadin dashboard UI
 
-### 🌐 **SEO Endpoint**
+### 🔐 Security Upgrade:
 
-* Introduced `POST /api/scraper/extract` endpoint
-* Protected by `@PreAuthorize("isAuthenticated()")`
-* Returns structured metadata DTO
+* Introduce **OAuth 2.0 / OpenID Connect** login option
+* Preserve JWT support for API clients
 
-### 🔍 **Purpose**
+### 🎛 UI Upgrade:
 
-* First working version of the scraping engine
-* Baseline metadata extraction ready for future SEO analysis
+* Vaadin admin interface
+* Dashboard for viewing scraping results
+* Compare-mode visualizer
+
+---
+
+# 🚀 **Version 3.0.0 — Full SaaS Platform (PLANNED)**
+
+### Long-term vision:
+
+- Coming soon

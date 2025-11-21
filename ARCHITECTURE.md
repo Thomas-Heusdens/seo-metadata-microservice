@@ -39,17 +39,20 @@ seo-metadata-microservice/
  │    ├── AuthTokenFilter.java           # extracts JWT from headers
  │    └── AuthEntryPointJwt.java         # handles unauthorized errors
  │
- ├── seo/                                # (future) HTML parsing logic
- │                              
- ├── scraping/                           # metadata extraction engine
- │    ├── SeoController.java             # contains /api/scraper/extract endpoint
- │    ├── SeoMetadata.java               # DTO for extracting metadata
- │    └── SeoService.java                # Logic to extract metadata using Jsoup
+ ├── seo/                           
+ │    ├── SeoAnalysisResult.java         # DTO for analysis result
+ │    ├── SeoAnalysisService.java        # Logic to analyse extracted metadata
+ │    └── SeoController.java             # Handles /api/scraper/analyze
+ │                        
+ ├── scraping/                           
+ │    ├── ScrapingController.java        # Handles /api/scraper/extract
+ │    ├── ScrapingMetadata.java          # DTO for extracting metadata
+ │    └── ScrapingService.java           # Logic to extract metadata using Jsoup
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
  ├── .env
- └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE)
+ └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE, ANALYSIS)
 ```
 
 This approach organizes the code **per feature/domain**, not per technical layer, which is more scalable and easier for contributors to understand.
@@ -151,6 +154,7 @@ This keeps controllers thin and maintainable.
 - `POST /api/auth/signin`
 - `POST /api/auth/register`
 - `GET /api/scraper/extract`
+- `GET /api/scraper/analyze`
 
 ---
 
@@ -175,10 +179,6 @@ Includes:
 - extracting OpenGraph metadata
 - extracting JSON-LD structures
 - hreflang detection
-
-Later features:
-
-- storing SEO results in DB
 - returning structured DTO responses
 
 ---

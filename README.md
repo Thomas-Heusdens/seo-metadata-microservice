@@ -29,16 +29,15 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - JWT authentication (register + login)
 - Complete SEO scraping module using Jsoup
 - Extended metadata extraction
-
-### 🛠️ In Progress
 - Analysis of the extracted metadata (logic)
 
+### 🛠️ In Progress
+- OAuth 2.0 integration
+
 ### 🔜 Upcoming
-- DTO system replacing entity-based API
 - Rate limiting (unauthenticated limited scans)
 - Full analysis engine (SEO scoring)
-- Optional Vaadin dashboard
-- Optional OAuth 2.0 integration
+- Vaadin dashboard
 
 ---
 
@@ -117,6 +116,7 @@ Current endpoints (temporary test endpoints):
 - `POST /api/auth/signin`
 - `POST /api/auth/register`
 - `GET /api/scraper/extract`
+- `GET /api/scraper/analyze`
 
 For full documentation:  
 👉 **[API.md](./API.md)**
