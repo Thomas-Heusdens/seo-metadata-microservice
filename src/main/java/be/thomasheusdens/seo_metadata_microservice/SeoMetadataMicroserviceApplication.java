@@ -9,5 +9,4 @@ public class SeoMetadataMicroserviceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SeoMetadataMicroserviceApplication.class, args);
 	}
-
 }
