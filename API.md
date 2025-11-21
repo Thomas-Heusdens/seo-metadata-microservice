@@ -1,109 +1,179 @@
+# ✅ **UPDATED API REFERENCE (ready to paste)**
+
+Includes the fully implemented scraping endpoint + cleaned structure.
+
+---
+
 # 📡 API Reference — SEO Metadata Microservice
 
-This document lists the currently available API endpoints.  
-These endpoints exist primarily for **internal testing** while the database, MVC structure, and services are being built.
+This API Reference documents the currently available endpoints of the **SEO Metadata Microservice**, including authentication, user/role management, and SEO metadata extraction.
 
-Later, these will be replaced by:
+The project is currently in:
 
-- `/auth/login`
-- `/auth/register`
-- `/seo/scrape`
-- `/seo/metadata`
-- `/seo/analyze`
+**Version 1.0.0 — Stable Release (Authentication + Scraper Prototype)**
 
 ---
 
-# 📌 Current Endpoints (Development Stage)
+# 🔐 Authentication Endpoints (`/api/auth`)
 
-## 🟦 Users
+These endpoints handle registration, login, and JWT token generation.
 
-### **GET /users**
+---
+
+## ✔ **POST /api/auth/register**
+
+Creates a new user account.
+Default role: **ROLE_USER**
+
+### Request
+
+```json
+{
+  "username": "thomas",
+  "password": "password123"
+}
+```
+
+### Response
+
+```json
+{
+  "id": 3,
+  "username": "thomas",
+  "roles": ["ROLE_USER"]
+}
+```
+
+**Access:** Public
+
+---
+
+## ✔ **POST /api/auth/login**
+
+Authenticates the user and returns a signed JWT token.
+
+### Request
+
+```json
+{
+  "username": "admin",
+  "password": "admin"
+}
+```
+
+### Response
+
+```json
+{
+  "username": "admin",
+  "roles": ["ROLE_ADMIN"],
+  "jwtToken": "eyJhbGciOiJIUzUxMiJ9..."
+}
+```
+
+**Access:** Public
+
+Use the token for all protected endpoints:
+`Authorization: Bearer <token>`
+
+---
+
+# 👥 Users API (`/users`)
+
+Admin-only internal endpoints.
+
+---
+
+## 🔐 **GET /users**
+
 Returns all users.
-
-Example response:
-```json
-[
-  {
-    "id": 1,
-    "email": "admin@test.com",
-    "passwordHash": "test123",
-    "roles": [
-      {"id": 1, "name": "ROLE_USER"}
-    ],
-    "createdAt": "2025-11-17T15:10:00"
-  }
-]
-```
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-### **GET /users/{id}**
-Returns user by ID.
+## 🔐 **GET /users/{id}`**
+
+Returns a user by ID.
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-### **POST /users**
-Creates a user (currently accepts full entity for testing purposes).
+## 🔐 **POST /users**
 
-Example body:
-```json
-{
-  "email": "test@test.com",
-  "passwordHash": "12345"
-}
-```
+Creates a new user without validation.
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-## 🟩 Roles
+# 🏷 Roles API (`/roles`)
 
-### **GET /roles**
+Admin-only endpoints for managing roles.
+
+---
+
+## 🔐 **GET /roles**
+
 Returns all roles.
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-### **POST /roles**
-Creates a role.
+## 🔐 **POST /roles**
 
-Example body:
+Creates a new role.
+
+### Request
+
 ```json
 {
-  "name": "ROLE_ADMIN"
+  "name": "ROLE_MODERATOR"
 }
 ```
 
----
-
-# 📌 Authentication
-
-⚠️ Not implemented yet.  
-Final API will include:
-
-- `POST /auth/register`
-- `POST /auth/login`
-- JWT-based authentication
-- Role-based permissions
+**Access:** Requires `ROLE_ADMIN`
 
 ---
 
-# 📌 SEO Endpoints
+# 🧪 Scraper API (`/api/scraper`)
 
-⚠️ Not implemented yet.  
-Final API will include:
-
-- `POST /seo/scrape`
-- `GET /seo/metadata/{id}`
-- `POST /seo/analyze`
+Endpoints for extracting metadata from any public webpage.
 
 ---
 
-# 📌 Notes
+## 🟦 **GET /api/scraper/extract**
 
-These endpoints are primarily for:
+Extracts SEO metadata using Jsoup based on a URL.
 
-- validating database connection
-- validating Hibernate schema generation
-- verifying controllers and services
-- testing with Postman
+### Example Request:
 
-Official API endpoints will be added after authentication and DTO layers are implemented.
+```
+GET /api/scraper/extract?url=https://skwd.be
+```
+
+### Example Response (shortened):
+
+```json
+{
+  "url": "https://skwd.be",
+  "title": "SKWD",
+  "description": "Student staffing agency...",
+  "canonicalUrl": "https://skwd.be",
+  "ogTitle": "SKWD – Student Staffing",
+  "h1": "Welcome to SKWD",
+  "h2List": ["Staffing Agency", "Our Services"],
+  "robots": "index,follow",
+  "viewport": "width=device-width, initial-scale=1",
+  "jsonLdList": ["{...}"],
+  "internalLinksCount": 42,
+  "externalLinksCount": 10,
+  "missingAltCount": 3,
+  "wordCount": 1020
+}
+```
+
+**Access:**
+🔒 Requires authentication
+
+```java
+@PreAuthorize("isAuthenticated()")
+```

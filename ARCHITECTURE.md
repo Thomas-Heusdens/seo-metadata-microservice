@@ -39,13 +39,20 @@ seo-metadata-microservice/
  │    ├── AuthTokenFilter.java           # extracts JWT from headers
  │    └── AuthEntryPointJwt.java         # handles unauthorized errors
  │
- ├── seo/                                # (future) HTML parsing logic
- ├── scraping/                           # (future) metadata extraction engine
+ ├── seo/                           
+ │    ├── SeoAnalysisResult.java         # DTO for analysis result
+ │    ├── SeoAnalysisService.java        # Logic to analyse extracted metadata
+ │    └── SeoController.java             # Handles /api/scraper/analyze
+ │                        
+ ├── scraping/                           
+ │    ├── ScrapingController.java        # Handles /api/scraper/extract
+ │    ├── ScrapingMetadata.java          # DTO for extracting metadata
+ │    └── ScrapingService.java           # Logic to extract metadata using Jsoup
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
  ├── .env
- └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE)
+ └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE, ANALYSIS)
 ```
 
 This approach organizes the code **per feature/domain**, not per technical layer, which is more scalable and easier for contributors to understand.
@@ -137,34 +144,23 @@ This keeps controllers thin and maintainable.
 
 ## **4. Controllers (REST API Layer)**
 
-`UserController`, `RoleController`, and `LoginController` expose REST endpoints:
+`UserController`, `RoleController`, `AuthController`, and `SeoController` expose REST endpoints:
 
 - `GET /users`
 - `POST /users`
+- `get /users/{id}`
 - `GET /roles`
 - `POST /roles`
-- `POST /signin`
-- `POST /register`
-
-At this stage, these controllers serve as **testing endpoints** for:
-
-✔ verifying DB connection  
-✔ verifying Hibernate schema generation  
-✔ verifying repositories and services  
-✔ verifying Spring Web MVC
-
-These endpoints will later be replaced with:
-
-- `/auth/register`
-- `/auth/login`
-- `/seo/scrape`
-- `/seo/metadata/{id}`
+- `POST /api/auth/signin`
+- `POST /api/auth/register`
+- `GET /api/scraper/extract`
+- `GET /api/scraper/analyze`
 
 ---
 
 ## **5. Configuration (Spring Boot / Security)**
 
-Include:
+Includes:
 
 - JWT token provider
 - Authentication filters
@@ -176,14 +172,13 @@ Include:
 
 ## **6. SEO Scraping (Jsoup)**
 
-Later features:
+Includes:
 
 - fetching HTML from target URLs
 - extracting titles, meta descriptions, canonical URLs
 - extracting OpenGraph metadata
 - extracting JSON-LD structures
 - hreflang detection
-- storing SEO results in DB
 - returning structured DTO responses
 
 ---

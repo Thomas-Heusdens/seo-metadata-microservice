@@ -25,6 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//once we add more logic to the login and register, we'll need to have a service
+//example utility of service: password strength, username rules, exceptions, resetting your password, adding OAuth or admin-creating-users
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -39,7 +42,7 @@ public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/signin")
+    @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginRequest loginRequest){
         Authentication authentication;
         try {
