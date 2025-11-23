@@ -73,8 +73,50 @@ Authenticates the user and returns a signed JWT token.
 
 **Access:** Public
 
+---
+
+## ✔ **POST /api/auth/logout**
+
+Logs the user out using the HttpCookie refresh token.
+
+### Response
+
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+**Access:** Protected
+
 Use the token for all protected endpoints:
 `Authorization: Bearer <token>`
+
+---
+
+## ✔ **POST /api/auth/refresh**
+
+Refreshes the access token and rotates the refresh token.
+
+### Request
+
+```json
+{
+  "refreshToken": "<REFRESH_TOKEN>"
+}
+```
+
+### Response
+
+```json
+{
+  "accessToken": "<ACCESS_TOKEN>",
+  "refreshToken": "<REFRESH_TOKEN>",
+  "tokenType": "Bearer"
+}
+```
+
+**Access:** Public
 
 ---
 

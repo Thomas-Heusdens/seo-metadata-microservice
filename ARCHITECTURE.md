@@ -28,10 +28,19 @@ seo-metadata-microservice/
  │    └── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
  │
  ├── auth/
+ │    ├── refresh/
+ │         ├── RefreshToken.java                  # RefreshToken entity
+ │         ├── RefreshTokenRepository.java        # JPA repo for RefreshToken
+ │         ├── RefreshTokenService.java           # Business logic for Refresh Tokens
+ │         ├── TokenRefreshException.java         # Exception handling of Refresh Tokens
+ │         ├── TokenRefreshRequest.java           # DTO: Refresh token
+ │         └── TokenRefreshResponse.java          # DTO: Refresh token, access token and token type
  │    ├── AuthController.java            # Handles /api/auth/signin and /api/auth/register
  │    ├── LoginRequest.java              # DTO: login username + password
  │    ├── LoginResponse.java             # DTO: username, roles, JWT token
  │    ├── RegisterRequest.java           # DTO: registration username + password
+ │    ├── LogoutRequest.java             # DTO: refresh token and logoutAll boolean
+ │    ├── MessageResponse.java           # DTO: Succesful message for logout
  │    └── RegisterResponse.java          # DTO: server response after user registration
  │
  ├── jwt/
@@ -103,6 +112,7 @@ Located in: `user/`
 
 - `User`
 - `Role`
+- `RefreshToken`
 
 Each entity is mapped using JPA annotations:
 
@@ -117,12 +127,14 @@ These models represent the database structure and hold the core data of the syst
 
 ## **2. Repositories (Data Access Layer)**
 
-`UserRepository` and `RoleRepository` extend `JpaRepository`, giving:
+`UserRepository`, `RoleRepository` and `RefreshTokenRepository` extend `JpaRepository`, giving:
 
 - `.findById()`
 - `.findAll()`
 - `.save()`
 - `.existsByEmail()`
+- `.findByToken`
+- `.findByUserAndRevokedFalse`
 - custom queries
 
 Spring Data JPA automatically implements these interfaces.
@@ -131,7 +143,7 @@ Spring Data JPA automatically implements these interfaces.
 
 ## **3. Services (Business Logic Layer)**
 
-`UserService` and `RoleService` contain:
+`UserService`, `RoleService`and `RefreshTokenService` contain:
 
 - business logic
 - validation
@@ -144,7 +156,7 @@ This keeps controllers thin and maintainable.
 
 ## **4. Controllers (REST API Layer)**
 
-`UserController`, `RoleController`, `AuthController`, and `SeoController` expose REST endpoints:
+`UserController`, `RoleController`, `AuthController`, `SeoController` and `ScraperController` expose REST endpoints:
 
 - `GET /users`
 - `POST /users`
@@ -153,9 +165,10 @@ This keeps controllers thin and maintainable.
 - `POST /roles`
 - `POST /api/auth/signin`
 - `POST /api/auth/register`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
 - `GET /api/scraper/extract`
 - `GET /api/scraper/analyze`
-
 ---
 
 ## **5. Configuration (Spring Boot / Security)**

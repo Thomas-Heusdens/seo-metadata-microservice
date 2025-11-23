@@ -30,14 +30,14 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Complete SEO scraping module using Jsoup
 - Extended metadata extraction
 - Analysis of the extracted metadata (logic)
+- Refresh and access tokens (logout and refresh endpoint)
 
 ### 🛠️ In Progress
-- OAuth 2.0 integration
+- Vaadin and OAuth 2.0 (login) integration
 
 ### 🔜 Upcoming
-- Rate limiting (unauthenticated limited scans)
+- Compare two URLs side-by-side
 - Full analysis engine (SEO scoring)
-- Vaadin dashboard
 
 ---
 
@@ -115,6 +115,8 @@ Current endpoints (temporary test endpoints):
 - `POST /roles`
 - `POST /api/auth/signin`
 - `POST /api/auth/register`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
 - `GET /api/scraper/extract`
 - `GET /api/scraper/analyze`
 
@@ -168,3 +170,4 @@ Feel free to reach out for collaboration, feedback, or contributions.
 9. [CORS::Spring Framework](https://docs.spring.io/spring-framework/reference/web/webmvc-cors.html)
 10. [Web Scrapping in Java with Jsoup (Basics)](https://www.youtube.com/watch?v=riZ2GAaMDGM)
 11. [Jsoup official documentation](https://jsoup.org/cookbook/input/load-document-from-url)
+12. [How access and refresh tokens work](https://www.youtube.com/watch?v=VVn9OG9nfH0&t=4520s)
