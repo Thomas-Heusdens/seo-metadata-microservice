@@ -52,12 +52,37 @@ public class SecurityConfiguration {
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
-                                "/api/auth/refresh"
+                                "/api/auth/refresh",
+                                "/",
+                                "/login",
+                                "/register",
+
+                                "/VAADIN/**",
+                                "/frontend/**",
+                                "/themes/**",
+                                "/images/**",
+                                "/icons/**",
+                                "/@js/**",
+                                "/js/**",
+                                "/js/auth-interceptor.js",
+                                "/auth-interceptor.js",
+                                "/@fs/**",
+                                "/webjars/**",
+                                "/manifest.webmanifest",
+                                "/sw.js",
+                                "/offline.html",
+                                "/frontend-es5/**",
+                                "/frontend-es6/**",
+                                "/@vite/**",
+                                "/@vaadin/**",
+                                "/vaadin/**",
+                                "/resources/**",
+                                "/connect/**",
+                                "/manifest.webmanifest"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(e -> e.authenticationEntryPoint(unauthorizedHandler))
-                //.httpBasic(withDefaults())
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())

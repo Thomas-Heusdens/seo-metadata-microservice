@@ -30,20 +30,10 @@ public class RefreshToken {
     @Column(name = "device_info")
     private String deviceInfo;
 
-    @Column(name = "ip_address")
-    private String ipAddress;
-
-    @Column(nullable = false)
-    private boolean revoked = false;
-
     @Column(name = "created_at", nullable = false)
     private Instant createdAt = Instant.now();
 
     public boolean isExpired() {
         return Instant.now().isAfter(this.expiryDate);
-    }
-
-    public boolean isValid() {
-        return !isRevoked() && !isExpired();
     }
 }

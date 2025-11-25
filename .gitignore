@@ -4,6 +4,33 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+### Vaadin / Flow
+src/main/frontend/generated/
+src/main/frontend/generated/**
+
+# Vaadin dev-mode
+.vaadin/
+node_modules/
+vite.generated.ts
+vite-devmode.ts
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Vite / dev server artifacts
+dist/
+vite.config.ts
+
+# Local dev features
+.vaadin-featureflags.json
+.vaadin-featureflags.js
+
+# TypeScript build caches
+tsconfig.tsbuildinfo
+
+### Jetty / Tomcat / Spring Boot builds
+*.class
+
 ### STS ###
 .apt_generated
 .classpath

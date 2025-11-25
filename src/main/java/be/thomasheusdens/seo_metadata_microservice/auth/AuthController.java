@@ -6,12 +6,12 @@ import be.thomasheusdens.seo_metadata_microservice.user.Role;
 import be.thomasheusdens.seo_metadata_microservice.user.RoleRepository;
 import be.thomasheusdens.seo_metadata_microservice.user.User;
 import be.thomasheusdens.seo_metadata_microservice.user.UserRepository;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-//once we add more logic to the login and register, we'll need to have a service
-//example utility of service: password strength, username rules, exceptions, resetting your password, adding OAuth or admin-creating-users
 
 @RestController
 @RequestMapping("/api/auth")
@@ -92,9 +88,8 @@ public class AuthController {
 
         // Create refresh token in DB
         String deviceInfo = request.getHeader("User-Agent");
-        String ipAddress = getClientIp(request);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(
-                userDetails.getUsername(), deviceInfo, ipAddress
+                userDetails.getUsername(), deviceInfo
         );
 
         // Set refresh token as HttpOnly cookie
@@ -163,8 +158,10 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(oldToken -> {
 
+                    // 🔥 Deletes old token + creates and saves new one
                     RefreshToken newToken = refreshTokenService.rotateToken(oldToken);
 
+                    // 🔥 Set new cookie
                     addRefreshTokenCookie(response, newToken.getToken());
 
                     User user = newToken.getUser();
@@ -176,6 +173,7 @@ public class AuthController {
                                     .toArray(String[]::new))
                             .build();
 
+                    // 🔥 New access token
                     String newAccessToken = jwtUtils.generateAccessToken(userDetails);
 
                     return ResponseEntity.ok(
@@ -189,55 +187,48 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logoutUser(@RequestBody(required = false) LogoutRequest logoutRequest,
-                                        @CookieValue(name = "refreshToken", required = false) String cookieToken,
-                                        HttpServletResponse response) {
+    public ResponseEntity<?> logoutUser(
+            @CookieValue(name = "refreshToken", required = false) String cookieToken,
+            @RequestBody(required = false) LogoutRequest body,
+            HttpServletResponse response) {
+
         String refreshToken = cookieToken;
-        if (refreshToken == null && logoutRequest != null) {
-            refreshToken = logoutRequest.getRefreshToken();
+
+        if (refreshToken == null && body != null) {
+            refreshToken = body.getRefreshToken();
         }
 
-        if (logoutRequest != null && logoutRequest.isLogoutAll()) {
-            // Logout from all devices
+        if (body != null && body.isLogoutAll()) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.isAuthenticated()) {
-                refreshTokenService.revokeAllUserTokens(auth.getName());
+                refreshTokenService.deleteAllUserTokens(auth.getName());
             }
         } else if (refreshToken != null) {
-            // Logout from current device only
-            refreshTokenService.revokeToken(refreshToken);
+            refreshTokenService.deleteToken(refreshToken);
         }
 
-        // Clear the cookie
-        clearRefreshTokenCookie(response);
+        ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, "")
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .maxAge(0)
+                .build();
+
+        response.addHeader("Set-Cookie", cookie.toString());
 
         return ResponseEntity.ok(new MessageResponse("Logged out successfully"));
     }
 
     private void addRefreshTokenCookie(HttpServletResponse response, String token) {
-        Cookie cookie = new Cookie(refreshTokenCookieName, token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true); // Set to false for local development without HTTPS
-        cookie.setPath("/");
-        cookie.setMaxAge((int) (refreshTokenExpirationMs / 1000));
-        // cookie.setAttribute("SameSite", "Strict"); // Uncomment for CSRF protection
-        response.addCookie(cookie);
-    }
+        ResponseCookie cookie = ResponseCookie.from(refreshTokenCookieName, token)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("None")
+                .maxAge(refreshTokenExpirationMs / 1000)
+                .build();
 
-    private void clearRefreshTokenCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(refreshTokenCookieName, "");
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
-
-    private String getClientIp(HttpServletRequest request) {
-        String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
+        response.addHeader("Set-Cookie", cookie.toString());
     }
 }

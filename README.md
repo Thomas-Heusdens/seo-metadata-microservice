@@ -171,3 +171,6 @@ Feel free to reach out for collaboration, feedback, or contributions.
 10. [Web Scrapping in Java with Jsoup (Basics)](https://www.youtube.com/watch?v=riZ2GAaMDGM)
 11. [Jsoup official documentation](https://jsoup.org/cookbook/input/load-document-from-url)
 12. [How access and refresh tokens work](https://www.youtube.com/watch?v=VVn9OG9nfH0&t=4520s)
+13. [JSON decoding](https://developer.mozilla.org/en-US/docs/Web/API/Window/atob)
+13. [Vaadin basics](https://www.youtube.com/watch?v=67oJxPRa3Mg)
+14. [Vaadin advanced topics](https://vaadin.com/docs/latest/flow)

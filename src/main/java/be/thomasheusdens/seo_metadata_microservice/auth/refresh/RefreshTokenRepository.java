@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,19 +15,17 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     Optional<RefreshToken> findByToken(String token);
 
-    List<RefreshToken> findByUserAndRevokedFalse(User user);
+    long countByUser(User user);
 
     @Modifying
-    @Query("UPDATE RefreshToken rt SET rt.revoked = true WHERE rt.user = :user")
-    void revokeAllByUser(@Param("user") User user);
+    @Query("DELETE FROM RefreshToken rt WHERE rt.token = :token")
+    void deleteByToken(@Param("token") String token);
 
     @Modifying
-    @Query("UPDATE RefreshToken rt SET rt.revoked = true WHERE rt.token = :token")
-    void revokeByToken(@Param("token") String token);
+    @Query("DELETE FROM RefreshToken rt WHERE rt.user = :user")
+    void deleteAllByUser(@Param("user") User user);
 
     @Modifying
     @Query("DELETE FROM RefreshToken rt WHERE rt.expiryDate < :now")
     void deleteAllExpired(@Param("now") Instant now);
-
-    long countByUserAndRevokedFalse(User user);
 }
