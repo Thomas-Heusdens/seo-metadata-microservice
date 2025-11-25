@@ -11,7 +11,7 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Spring Security (JWT)
 - Hibernate / JPA (MySQL)
 - Jsoup (HTML parsing)
-- (Optional later) Vaadin dashboard
+- Vaadin dashboard
 
 ---
 
@@ -66,6 +66,12 @@ For full architectural details, see:
 ### - Database & ORM:
 - mysql-connector-j (runtime) – MySQL JDBC driver
 - com.h2database:h2 (runtime) – In-memory database for local/dev testing
+
+### - Vaadin:
+- vaadin-spring-boot-starter - Integrates Vaadin with Spring Boot
+- vaadin-core - Provides the core Vaadin platform components, routing, Flow runtime, TypeScript helpers, etc.
+- vaadin-testbench - UI testing framework specifically for Vaadin apps
+- vaadin-maven-plugin - Manages Vaadin’s frontend build and client-side assets via Maven
 
 ### - Security / JWT:
 - io.jsonwebtoken:jjwt-api – JWT API
@@ -172,5 +178,5 @@ Feel free to reach out for collaboration, feedback, or contributions.
 11. [Jsoup official documentation](https://jsoup.org/cookbook/input/load-document-from-url)
 12. [How access and refresh tokens work](https://www.youtube.com/watch?v=VVn9OG9nfH0&t=4520s)
 13. [JSON decoding](https://developer.mozilla.org/en-US/docs/Web/API/Window/atob)
-13. [Vaadin basics](https://www.youtube.com/watch?v=67oJxPRa3Mg)
-14. [Vaadin advanced topics](https://vaadin.com/docs/latest/flow)
+14. [Vaadin basics](https://www.youtube.com/watch?v=67oJxPRa3Mg)
+15. [Vaadin advanced topics](https://vaadin.com/docs/latest/flow)

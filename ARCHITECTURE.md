@@ -57,9 +57,18 @@ seo-metadata-microservice/
  │    ├── ScrapingController.java        # Handles /api/scraper/extract
  │    ├── ScrapingMetadata.java          # DTO for extracting metadata
  │    └── ScrapingService.java           # Logic to extract metadata using Jsoup
+ ├── gui/
+ │    ├── components/
+ │         └── LogoutButton.java         # Contains logic and styling for logout button
+ │    ├── Config.java                    # Loads a js module
+ │    ├── HomeView.java                  # Contains logic and styling of homepage
+ │    ├── LoginView.java                 # Contains logic and styling of login form
+ │    ├── MainLayout.java                # Contains the navigation
+ │    └── RegisterView.java              # Contains logic and styling of register form
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
+ ├── auth-interceptor.js                 # Contains logic of the refresh and access token linked with backend flow
  ├── .env
  └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE, ANALYSIS)
 ```
@@ -134,7 +143,7 @@ These models represent the database structure and hold the core data of the syst
 - `.save()`
 - `.existsByEmail()`
 - `.findByToken`
-- `.findByUserAndRevokedFalse`
+- `.countByUser`
 - custom queries
 
 Spring Data JPA automatically implements these interfaces.

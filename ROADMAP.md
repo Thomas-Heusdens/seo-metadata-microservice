@@ -46,6 +46,8 @@ This roadmap outlines the major progression of the project and the development f
 
 # 🎯 **Version 2.0.0 — Online Presence Comparison Engine (UPCOMING)**
 
+*(Wraps all versions 1.1.0 → 1.??.0)*
+
 ### 🔜 Planned features:
 
 * Compare **two URLs side-by-side**
@@ -60,6 +62,7 @@ This roadmap outlines the major progression of the project and the development f
 
 * Introduce **OAuth 2.0 / OpenID Connect** login option
 * Preserve JWT support for API clients
+* Use of refresh and access tokens with HttpCookies
 
 ### 🎛 UI Upgrade:
 
