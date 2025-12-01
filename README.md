@@ -14,6 +14,7 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Vaadin dashboard
 - SEO Metadata
 - Lombok
+- OAuth 2.0 login
 
 ---
 
@@ -33,13 +34,15 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Extended metadata extraction
 - Analysis of the extracted metadata (logic)
 - Refresh and access tokens (logout and refresh endpoint)
+- Vaadin and OAuth 2.0 (login) integration
 
 ### 🛠️ In Progress
-- Vaadin and OAuth 2.0 (login) integration
+
 
 ### 🔜 Upcoming
 - Compare two URLs side-by-side
 - Full analysis engine (SEO scoring)
+- Session management
 
 ---
 
@@ -111,7 +114,7 @@ GITHUB_CLIENT_SECRET=yoursecret
 
 ## 3. Run the application
 ```bash
-./mvnw spring-boot:run
+./mvn spring-boot:run
 ```
 
 ---

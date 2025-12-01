@@ -25,7 +25,8 @@ seo-metadata-microservice/
  ├── security/
  │    ├── SecurityConfiguration.java     # Spring Security config, JWT filter, RBAC, CORS enabled
  │    ├── CustomUserDetailsService.java  # Loads user details + roles from DB for authentication
- │    └── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
+ │    ├── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
+ │    └── PasswordConfig.java            # Contains the PasswordEncoder Bean
  │
  ├── auth/
  │    ├── refresh/
@@ -54,6 +55,7 @@ seo-metadata-microservice/
  ├── seo/                           
  │    ├── SeoAnalysisResult.java         # DTO for analysis result
  │    ├── SeoAnalysisService.java        # Logic to analyse extracted metadata
+ │    ├── SeoCheck.java                  # DTO for the check of each metadata element
  │    └── SeoController.java             # Handles /api/scraper/analyze
  │                        
  ├── scraping/                           
@@ -68,6 +70,7 @@ seo-metadata-microservice/
  │    ├── LoginView.java                 # Contains logic and styling of login form
  │    ├── MainLayout.java                # Contains the navigation
  │    ├── RegisterView.java              # Contains logic and styling of register form
+ │    ├── OAuthSuccessView.java          # Redirects the user to the homepage after a successful login with Google or Github
  │    └── SeoAnalysisView.java           # Displays the result of the fetch to api/seo/analyze
  │
  ├── SeoMetadataMicroserviceApplication.java
@@ -192,7 +195,7 @@ Includes:
 - Authentication filters
 - WebSecurityConfig
 - Password encoders
-- CORS settings (Future)
+- CORS settings
 
 ---
 
@@ -206,38 +209,3 @@ Includes:
 - extracting JSON-LD structures
 - hreflang detection
 - returning structured DTO responses
-
----
-
-# 📌 Data Flow Diagram
-
-```
-               ┌────────────────────────┐
-HTTP Request → │  AuthTokenFilter (JWT) │
-               └────────────────────────┘
-                           │
-                           ▼
-               ┌────────────────────────┐
-               │ SecurityContextHolder   │
-               │ (Authentication + Roles)│
-               └────────────────────────┘
-                           │
-                           ▼
-                    Authorization?
-                (PreAuthorize, RBAC check)
-                           │
-         if ok ────────────┘
-                           ▼
-                  ┌────────────────┐
-                  │   Controller   │
-                  └────────────────┘
-                           │
-                           ▼
-        (DTO mapping)  →  Service Layer
-                           │
-                           ▼
-                     Repository Layer
-                           │
-                           ▼
-                        MySQL DB
-```
