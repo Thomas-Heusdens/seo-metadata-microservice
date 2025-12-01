@@ -19,8 +19,16 @@ public class SeoController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @GetMapping("/api/scraper/analyze")
+    @GetMapping("/api/seo/analyze")
     public SeoAnalysisResult analyze(@RequestParam String url) throws Exception {
+        if (url == null || url.equals("undefined") || url.isBlank()) {
+            throw new IllegalArgumentException("Valid URL is required");
+        }
+
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            throw new IllegalArgumentException("URL must start with http:// or https://");
+        }
+
         ScraperMetadata metadata = scraperService.extractMetadata(url);
         return analysisService.analyze(metadata);
     }

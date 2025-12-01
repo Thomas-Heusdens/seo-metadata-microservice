@@ -28,10 +28,22 @@ seo-metadata-microservice/
  │    └── CorsConfig.java                # Defines allowed origins, headers, and JWT access for the frontend
  │
  ├── auth/
+ │    ├── refresh/
+ │         ├── RefreshToken.java                  # RefreshToken entity
+ │         ├── RefreshTokenRepository.java        # JPA repo for RefreshToken
+ │         ├── RefreshTokenService.java           # Business logic for Refresh Tokens
+ │         ├── TokenRefreshException.java         # Exception handling of Refresh Tokens
+ │         ├── TokenRefreshRequest.java           # DTO: Refresh token
+ │         └── TokenRefreshResponse.java          # DTO: Refresh token, access token and token type
+ │    ├── oauth2/
+ │         ├── CustomOAuth2UserService.java       # Handles new and already existing users connecting with Google
+ │         ├── OAuth2Config.java                  # JPA repo for RefreshToken
  │    ├── AuthController.java            # Handles /api/auth/signin and /api/auth/register
  │    ├── LoginRequest.java              # DTO: login username + password
  │    ├── LoginResponse.java             # DTO: username, roles, JWT token
  │    ├── RegisterRequest.java           # DTO: registration username + password
+ │    ├── LogoutRequest.java             # DTO: refresh token and logoutAll boolean
+ │    ├── MessageResponse.java           # DTO: Succesful message for logout
  │    └── RegisterResponse.java          # DTO: server response after user registration
  │
  ├── jwt/
@@ -48,9 +60,19 @@ seo-metadata-microservice/
  │    ├── ScrapingController.java        # Handles /api/scraper/extract
  │    ├── ScrapingMetadata.java          # DTO for extracting metadata
  │    └── ScrapingService.java           # Logic to extract metadata using Jsoup
+ ├── gui/
+ │    ├── components/
+ │         └── LogoutButton.java         # Contains logic and styling for logout button
+ │    ├── Config.java                    # Loads a js module
+ │    ├── HomeView.java                  # Contains logic and styling of homepage
+ │    ├── LoginView.java                 # Contains logic and styling of login form
+ │    ├── MainLayout.java                # Contains the navigation
+ │    ├── RegisterView.java              # Contains logic and styling of register form
+ │    └── SeoAnalysisView.java           # Displays the result of the fetch to api/seo/analyze
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
+ ├── auth-interceptor.js                 # Contains logic of the refresh and access token linked with backend flow
  ├── .env
  └── documentation (README, API, ROADMAP, ARCHITECTURE, LICENSE, ANALYSIS)
 ```
@@ -103,6 +125,7 @@ Located in: `user/`
 
 - `User`
 - `Role`
+- `RefreshToken`
 
 Each entity is mapped using JPA annotations:
 
@@ -117,12 +140,14 @@ These models represent the database structure and hold the core data of the syst
 
 ## **2. Repositories (Data Access Layer)**
 
-`UserRepository` and `RoleRepository` extend `JpaRepository`, giving:
+`UserRepository`, `RoleRepository` and `RefreshTokenRepository` extend `JpaRepository`, giving:
 
 - `.findById()`
 - `.findAll()`
 - `.save()`
 - `.existsByEmail()`
+- `.findByToken`
+- `.countByUser`
 - custom queries
 
 Spring Data JPA automatically implements these interfaces.
@@ -131,7 +156,7 @@ Spring Data JPA automatically implements these interfaces.
 
 ## **3. Services (Business Logic Layer)**
 
-`UserService` and `RoleService` contain:
+`UserService`, `RoleService`, `RefreshTokenService`, `ScraperService`, and `SeoAnalysisService` contain:
 
 - business logic
 - validation
@@ -144,7 +169,7 @@ This keeps controllers thin and maintainable.
 
 ## **4. Controllers (REST API Layer)**
 
-`UserController`, `RoleController`, `AuthController`, and `SeoController` expose REST endpoints:
+`UserController`, `RoleController`, `AuthController`, `SeoController` and `ScraperController` expose REST endpoints:
 
 - `GET /users`
 - `POST /users`
@@ -153,9 +178,10 @@ This keeps controllers thin and maintainable.
 - `POST /roles`
 - `POST /api/auth/signin`
 - `POST /api/auth/register`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
 - `GET /api/scraper/extract`
-- `GET /api/scraper/analyze`
-
+- `GET /api/seo/analyze`
 ---
 
 ## **5. Configuration (Spring Boot / Security)**

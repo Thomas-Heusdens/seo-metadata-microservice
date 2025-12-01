@@ -73,8 +73,50 @@ Authenticates the user and returns a signed JWT token.
 
 **Access:** Public
 
+---
+
+## ✔ **POST /api/auth/logout**
+
+Logs the user out using the HttpCookie refresh token.
+
+### Response
+
+```json
+{
+  "message": "Logged out successfully"
+}
+```
+
+**Access:** Protected
+
 Use the token for all protected endpoints:
 `Authorization: Bearer <token>`
+
+---
+
+## ✔ **POST /api/auth/refresh**
+
+Refreshes the access token and rotates the refresh token.
+
+### Request
+
+```json
+{
+  "refreshToken": "<REFRESH_TOKEN>"
+}
+```
+
+### Response
+
+```json
+{
+  "accessToken": "<ACCESS_TOKEN>",
+  "refreshToken": "<REFRESH_TOKEN>",
+  "tokenType": "Bearer"
+}
+```
+
+**Access:** Public
 
 ---
 
@@ -168,6 +210,39 @@ GET /api/scraper/extract?url=https://skwd.be
   "externalLinksCount": 10,
   "missingAltCount": 3,
   "wordCount": 1020
+}
+```
+
+**Access:**
+🔒 Requires authentication
+
+```java
+@PreAuthorize("isAuthenticated()")
+```
+
+---
+
+# 🧪 SEO API (`/api/seo`)
+
+Endpoints for extracting metadata from any public webpage.
+
+---
+
+## 🟦 **GET /api/scraper/analyze**
+
+Uses the api/scraper/extract api and applies the logic on the retrieved content to give feedback.
+
+### Example Request:
+
+```
+GET /api/seo/analyze?url=https://skwd.be
+```
+
+### Example Response (shortened):
+
+```json
+{
+
 }
 ```
 
