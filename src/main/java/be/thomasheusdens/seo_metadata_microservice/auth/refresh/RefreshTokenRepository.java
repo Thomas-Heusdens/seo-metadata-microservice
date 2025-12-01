@@ -1,0 +1,31 @@
+package be.thomasheusdens.seo_metadata_microservice.auth.refresh;
+
+import be.thomasheusdens.seo_metadata_microservice.user.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.time.Instant;
+import java.util.Optional;
+
+@Repository
+public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+
+    Optional<RefreshToken> findByToken(String token);
+
+    long countByUser(User user);
+
+    @Modifying
+    @Query("DELETE FROM RefreshToken rt WHERE rt.token = :token")
+    void deleteByToken(@Param("token") String token);
+
+    @Modifying
+    @Query("DELETE FROM RefreshToken rt WHERE rt.user = :user")
+    void deleteAllByUser(@Param("user") User user);
+
+    @Modifying
+    @Query("DELETE FROM RefreshToken rt WHERE rt.expiryDate < :now")
+    void deleteAllExpired(@Param("now") Instant now);
+}

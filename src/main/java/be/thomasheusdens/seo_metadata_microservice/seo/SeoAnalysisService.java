@@ -11,153 +11,281 @@ public class SeoAnalysisService {
 
     public SeoAnalysisResult analyze(ScraperMetadata data) {
 
-        List<String> warnings = new ArrayList<>();
-        List<String> positives = new ArrayList<>();
+        List<SeoCheck> checks = new ArrayList<>();
 
-        // --- TITLE ---
-        if (data.getTitle() == null || data.getTitle().isBlank()) {
-            warnings.add("Missing <title> tag.");
+        // -------------------------------
+        // 1. TITLE
+        // -------------------------------
+        if (isBlank(data.getTitle())) {
+            checks.add(SeoCheck.critical(
+                    "Title Tag",
+                    "Missing <title> tag.",
+                    "Add a <title> tag between 45–70 characters.",
+                    "<title>Your page title | Brand</title>"
+            ));
         } else {
             int length = data.getTitle().length();
-            if (length < 45 || length > 70) {
-                warnings.add("Title length should be 45–70 characters. Current length: " + length);
+            if (length < 45) {
+                checks.add(SeoCheck.warning(
+                        "Title Tag",
+                        "Title too short (" + length + " chars).",
+                        "Aim for 45–70 characters with a clear keyword.",
+                        "<title>Best Product for X | Brand</title>"
+                ));
+            } else if (length > 70) {
+                checks.add(SeoCheck.warning(
+                        "Title Tag",
+                        "Title too long (" + length + " chars) — may be truncated in Google.",
+                        "Reduce to 45–70 characters.",
+                        "<title>Optimized concise title | Brand</title>"
+                ));
             } else {
-                positives.add("Title length is optimal (" + length + " chars).");
+                checks.add(SeoCheck.ok(
+                        "Title Tag",
+                        "Optimal title length (" + length + " chars)."
+                ));
             }
         }
 
-        // --- META DESCRIPTION ---
-        if (data.getDescription() == null || data.getDescription().isBlank()) {
-            warnings.add("Missing meta description.");
+        // -------------------------------
+        // 2. META DESCRIPTION
+        // -------------------------------
+        if (isBlank(data.getDescription())) {
+            checks.add(SeoCheck.critical(
+                    "Meta Description",
+                    "Missing meta description.",
+                    "Write a concise 120–160 character description.",
+                    "<meta name=\"description\" content=\"Your optimized description here...\" />"
+            ));
         } else {
             int len = data.getDescription().length();
             if (len < 120 || len > 160) {
-                warnings.add("Meta description should be 120–160 characters. Current length: " + len);
+                checks.add(SeoCheck.warning(
+                        "Meta Description",
+                        "Meta description length is " + len + " chars (recommended 120–160).",
+                        "Rewrite to 120–160 characters with a benefit + CTA.",
+                        "<meta name=\"description\" content=\"Professional service for ... Learn more today.\" />"
+                ));
             } else {
-                positives.add("Meta description length is optimal (" + len + " chars).");
+                checks.add(SeoCheck.ok(
+                        "Meta Description",
+                        "Meta description length is optimal (" + len + " chars)."
+                ));
             }
         }
 
-        // --- CANONICAL ---
-        if (data.getCanonicalUrl() == null || data.getCanonicalUrl().isBlank()) {
-            warnings.add("Missing canonical URL.");
+        // -------------------------------
+        // 3. CANONICAL
+        // -------------------------------
+        if (isBlank(data.getCanonicalUrl())) {
+            checks.add(SeoCheck.warning(
+                    "Canonical Tag",
+                    "Missing canonical tag.",
+                    "Add a canonical URL to avoid duplicate content.",
+                    "<link rel=\"canonical\" href=\"https://yourpage.com\" />"
+            ));
         } else {
-            positives.add("Canonical tag exists.");
+            checks.add(SeoCheck.ok(
+                    "Canonical Tag",
+                    "Canonical tag present."
+            ));
         }
 
-        // --- KEYWORDS ---
-        if (data.getKeywords() != null && !data.getKeywords().isBlank()) {
-            positives.add("Meta keywords found.");
-        }
+        // -------------------------------
+        // 4. OPEN GRAPH
+        // -------------------------------
+        addSimplePresenceCheck(checks, data.getOgTitle(), "OG Title",
+                "Missing og:title",
+                "<meta property=\"og:title\" content=\"Your OG title\" />");
 
-        // --- OG TITLE ---
-        if (data.getOgTitle() == null || data.getOgTitle().isBlank()) {
-            warnings.add("Missing og:title.");
+        addSimplePresenceCheck(checks, data.getOgDescription(), "OG Description",
+                "Missing og:description",
+                "<meta property=\"og:description\" content=\"Your OG description\" />");
+
+        addSimplePresenceCheck(checks, data.getOgImage(), "OG Image",
+                "Missing og:image",
+                "<meta property=\"og:image\" content=\"https://yourcdn.com/preview.jpg\" />");
+
+        // -------------------------------
+        // 5. H1
+        // -------------------------------
+        if (isBlank(data.getH1())) {
+            checks.add(SeoCheck.warning(
+                    "H1 Heading",
+                    "Missing H1 heading.",
+                    "Add a single clear H1 per page.",
+                    "<h1>Your main page headline</h1>"
+            ));
         } else {
-            positives.add("og:title exists.");
+            checks.add(SeoCheck.ok("H1 Heading", "H1 heading found."));
         }
 
-        // --- OG DESCRIPTION ---
-        if (data.getOgDescription() == null || data.getOgDescription().isBlank()) {
-            warnings.add("Missing og:description.");
+        // -------------------------------
+        // 6. FAVICON
+        // -------------------------------
+        if (isBlank(data.getFavicon())) {
+            checks.add(SeoCheck.warning(
+                    "Favicon",
+                    "Missing favicon.",
+                    "Add a favicon for branding consistency.",
+                    "<link rel=\"icon\" href=\"/favicon.ico\" />"
+            ));
         } else {
-            positives.add("og:description exists.");
+            checks.add(SeoCheck.ok("Favicon", "Favicon found."));
         }
 
-        // --- OG IMAGE ---
-        if (data.getOgImage() == null || data.getOgImage().isBlank()) {
-            warnings.add("Missing og:image.");
+        // -------------------------------
+        // 7. HREFLANG
+        // -------------------------------
+        if (data.getHreflangs().isEmpty()) {
+            checks.add(SeoCheck.warning(
+                    "Hreflang",
+                    "No hreflang tags detected.",
+                    "Add hreflangs for multilingual sites.",
+                    "<link rel=\"alternate\" hreflang=\"fr\" href=\"https://site.com/fr\" />"
+            ));
         } else {
-            positives.add("og:image found.");
+            checks.add(SeoCheck.ok(
+                    "Hreflang",
+                    "Hreflang tags found (" + data.getHreflangs().size() + ")."
+            ));
         }
 
-        // --- H1 ---
-        if (data.getH1() == null || data.getH1().isBlank()) {
-            warnings.add("Missing H1 heading.");
+        // -------------------------------
+        // 8. ROBOTS
+        // -------------------------------
+        if (data.getRobots().contains("noindex")) {
+            checks.add(SeoCheck.critical(
+                    "Robots Tag",
+                    "This page is marked as noindex — Google will NOT index it.",
+                    "Remove `noindex` unless intentional.",
+                    "<meta name=\"robots\" content=\"index, follow\">"
+            ));
         } else {
-            positives.add("H1 heading found.");
+            checks.add(SeoCheck.ok("Robots Tag", "Robots tag looks safe."));
         }
 
-        // Multiple H1 detector
-        // If H1 text length is very long, they might have multiple concatenated H1s
-        if (data.getH1() != null && data.getH1().split(" ").length > 20) {
-            warnings.add("Possible multiple H1 tags or unclear H1 structure.");
-        }
-
-        // --- FAVICON ---
-        if (data.getFavicon() == null || data.getFavicon().isBlank()) {
-            warnings.add("Missing favicon.");
+        // -------------------------------
+        // 9. VIEWPORT
+        // -------------------------------
+        if (isBlank(data.getViewport()) || !data.getViewport().contains("device-width")) {
+            checks.add(SeoCheck.warning(
+                    "Viewport",
+                    "Missing or incorrect viewport tag — page may display poorly on mobile.",
+                    "Use the standard responsive viewport.",
+                    "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">"
+            ));
         } else {
-            positives.add("Favicon exists.");
+            checks.add(SeoCheck.ok("Viewport", "Viewport is valid."));
         }
 
-        // --- HREFLANG ---
-        if (data.getHreflangs() != null && !data.getHreflangs().isEmpty()) {
-            positives.add("Hreflang tags found (" + data.getHreflangs().size() + ").");
-        }
-
-        // --- ROBOTS ---
-        if (data.getRobots() != null && data.getRobots().contains("noindex")) {
-            warnings.add("Page contains noindex — page will not appear in Google.");
-        }
-
-        // --- VIEWPORT ---
-        if (data.getViewport() == null || !data.getViewport().contains("width=device-width")) {
-            warnings.add("Missing or incorrect viewport tag — poor mobile rendering.");
+        // -------------------------------
+        // 10. JSON-LD
+        // -------------------------------
+        if (data.getJsonLdList().isEmpty()) {
+            checks.add(SeoCheck.warning(
+                    "JSON-LD Structured Data",
+                    "No JSON-LD structured data found.",
+                    "Add Schema.org JSON-LD for richer Google results.",
+                    "<script type=\"application/ld+json\">{ ... }</script>"
+            ));
         } else {
-            positives.add("Viewport tag is valid.");
+            checks.add(SeoCheck.ok(
+                    "JSON-LD Structured Data",
+                    "Structured data detected (" + data.getJsonLdList().size() + " blocks)."
+            ));
         }
 
-        // --- JSON-LD ---
-        if (data.getJsonLdList() != null && !data.getJsonLdList().isEmpty()) {
-            positives.add("JSON-LD structured data found.");
-        } else {
-            warnings.add("Missing structured data (JSON-LD).");
-        }
+        // -------------------------------
+        // 11. TWITTER TAGS
+        // -------------------------------
+        addSimplePresenceCheck(checks, data.getTwitterTitle(), "Twitter Title",
+                "Missing twitter:title",
+                "<meta name=\"twitter:title\" content=\"Title\" />");
 
-        // --- TWITTER TAGS ---
-        if (data.getTwitterTitle() == null || data.getTwitterTitle().isBlank()) {
-            warnings.add("Missing twitter:title.");
-        }
-        if (data.getTwitterDescription() == null || data.getTwitterDescription().isBlank()) {
-            warnings.add("Missing twitter:description.");
-        }
-        if (data.getTwitterImage() == null || data.getTwitterImage().isBlank()) {
-            warnings.add("Missing twitter:image.");
-        }
+        addSimplePresenceCheck(checks, data.getTwitterDescription(), "Twitter Description",
+                "Missing twitter:description",
+                "<meta name=\"twitter:description\" content=\"Description\" />");
 
-        // --- INTERNAL LINKS ---
+        addSimplePresenceCheck(checks, data.getTwitterImage(), "Twitter Image",
+                "Missing twitter:image",
+                "<meta name=\"twitter:image\" content=\"https://yourcdn.com/preview.jpg\" />");
+
+        // -------------------------------
+        // 12. INTERNAL LINKS
+        // -------------------------------
         if (data.getInternalLinksCount() < 5) {
-            warnings.add("Few internal links detected (" + data.getInternalLinksCount() + ").");
+            checks.add(SeoCheck.warning(
+                    "Internal Links",
+                    "Only " + data.getInternalLinksCount() + " internal links found.",
+                    "Add more internal links to improve navigation & SEO.",
+                    "<a href=\"/product\">Product Page</a>"
+            ));
         } else {
-            positives.add("Healthy internal linking (" + data.getInternalLinksCount() + ").");
+            checks.add(SeoCheck.ok(
+                    "Internal Links",
+                    "Healthy number of internal links (" + data.getInternalLinksCount() + ")."
+            ));
         }
 
-        // --- EXTERNAL LINKS ---
+        // -------------------------------
+        // 13. EXTERNAL LINKS
+        // -------------------------------
         if (data.getExternalLinksCount() == 0) {
-            warnings.add("No external links found. Might reduce authority.");
+            checks.add(SeoCheck.warning(
+                    "External Links",
+                    "No external links found — may reduce domain trust.",
+                    "Link to relevant authoritative sources.",
+                    "<a href=\"https://wikipedia.org/...\">See more</a>"
+            ));
         } else {
-            positives.add("External links found (" + data.getExternalLinksCount() + ").");
+            checks.add(SeoCheck.ok(
+                    "External Links",
+                    "External links found (" + data.getExternalLinksCount() + ")."
+            ));
         }
 
-        // --- IMAGES & ALT TEXT ---
+        // -------------------------------
+        // 14. ALT TEXT
+        // -------------------------------
         if (data.getMissingAltCount() > 0) {
-            warnings.add(data.getMissingAltCount() + " images missing alt attributes.");
+            checks.add(SeoCheck.warning(
+                    "Image Alt Text",
+                    data.getMissingAltCount() + " images missing alt text.",
+                    "Add descriptive alt attributes for accessibility & SEO.",
+                    "<img src=\"img.jpg\" alt=\"Description of the image\" />"
+            ));
         } else {
-            positives.add("All images have alt attributes.");
+            checks.add(SeoCheck.ok("Image Alt Text", "All images have alt text."));
         }
 
-        // --- WORD COUNT ---
+        // -------------------------------
+        // 15. WORD COUNT
+        // -------------------------------
         if (data.getWordCount() < 300) {
-            warnings.add("Low content (" + data.getWordCount() + " words). Recommended 300+.");
+            checks.add(SeoCheck.warning(
+                    "Page Content Length",
+                    "Low word count (" + data.getWordCount() + ").",
+                    "Aim for 300+ words of meaningful content.",
+                    "<p>Your expanded content here...</p>"
+            ));
         } else {
-            positives.add("Good content length (" + data.getWordCount() + " words).");
+            checks.add(SeoCheck.ok("Page Content Length",
+                    "Healthy word count (" + data.getWordCount() + ")."));
         }
 
-        return new SeoAnalysisResult(
-                data.getUrl(),
-                warnings,
-                positives
-        );
+        return new SeoAnalysisResult(data.getUrl(), checks);
+    }
+
+    private boolean isBlank(String s) {
+        return s == null || s.isBlank();
+    }
+
+    private void addSimplePresenceCheck(List<SeoCheck> list, String value, String label, String missingMessage, String example) {
+        if (isBlank(value)) {
+            list.add(SeoCheck.warning(label, missingMessage, "Add this tag:", example));
+        } else {
+            list.add(SeoCheck.ok(label, label + " exists."));
+        }
     }
 }
