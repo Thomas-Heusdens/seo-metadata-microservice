@@ -1,225 +1,280 @@
-# 🔍 SEO & Online Presence – Compact Checklist
+# 🔍 **SEO & Online Presence – Full Analysis Checklist (v2)**
+
+*Aligned with `SeoAnalysisService` logic*
+
+This checklist represents the exact validation rules applied by the backend during a website analysis. It is also the human-readable reference to understand how the SEO coaching system works.
 
 ---
 
-## 1. Title
+# ✅ **1. Title (`<title>`)**
 
-**How to fetch:** `doc.title()`
-**What to check:**
+**How it’s extracted:**
+`doc.title()`
 
-* Ideal length: **45–70 characters**
-* Contains main keyword
-* Brand included at end
-* Unique per page
+**Checks performed:**
 
----
+* ❌ Missing title → **Critical**
+* ⚠️ Too short (< 45 chars)
+* ⚠️ Too long (> 70 chars)
+* ✅ Optimal length (45–70 chars)
 
-## 2. Meta Description
+**What matters:**
 
-**How to fetch:** `doc.select("meta[name=description]").attr("content")`
-**What to check:**
-
-* Ideal length: **120–160 characters**
-* Clear explanation of page purpose
-* 1–2 keywords naturally included
-* Soft CTA recommended
-* Unique per page
+* Include primary keyword
+* Add brand at the end
 
 ---
 
-## 3. Canonical
+# ✅ **2. Meta Description**
 
-**How to fetch:** `doc.select("link[rel=canonical]").attr("href")`
-**What to check:**
+**How it’s extracted:**
+`doc.select("meta[name=description]").attr("content")`
 
-* Exists
-* Self-referential (canonical = current URL)
-* No canonical chains
-* Consistent with site structure
+**Checks performed:**
 
----
+* ❌ Missing → **Critical**
+* ⚠️ Length not between 120–160 chars
+* ✅ Optimal range
 
-## 4. Keywords (Legacy)
+**What matters:**
 
-**How to fetch:** `doc.select("meta[name=keywords]").attr("content")`
-**What to check:**
-
-* Optional (not used by Google)
-* Should not be spammy
+* Clear purpose
+* Benefits + light CTA
+* Not duplicated
 
 ---
 
-## 5. Open Graph Title
+# ✅ **3. Canonical URL**
 
-**How to fetch:** `doc.select("meta[property=og:title]").attr("content")`
-**What to check:**
+**How it’s extracted:**
+`doc.select("link[rel=canonical]").attr("href")`
 
-* Exists
-* Clear, concise, and similar to `<title>`
-* More “marketing-style” allowed
+**Checks performed:**
 
----
+* ⚠️ Missing canonical tag
+* ✅ Canonical exists
 
-## 6. Open Graph Description
+**What matters:**
 
-**How to fetch:** `doc.select("meta[property=og:description]").attr("content")`
-**What to check:**
-
-* Exists
-* Short, clear, benefit-focused
-* Not keyword-stuffed
+* Avoid duplicate content
+* Canonical = current URL
 
 ---
 
-## 7. Open Graph Image
+# 🟦 **4. Open Graph Tags (Social Preview)**
 
-**How to fetch:** `doc.select("meta[property=og:image]").attr("content")`
-**What to check:**
+## 4.1 OG Title
 
-* Exists
-* High resolution (**1200×630 recommended**)
-* Relevant and professional
-* Not a tiny logo
+`meta[property=og:title]`
 
----
+## 4.2 OG Description
 
-## 8. H1
+`meta[property=og:description]`
 
-**How to fetch:** `doc.select("h1").text()`
-**What to check:**
+## 4.3 OG Image
 
-* Only **one** main H1
-* Clear statement of the page topic
-* Matches the title/intent
-* Not generic (“Welcome”, “Home”)
+`meta[property=og:image]`
 
----
+**Checks performed:**
 
-## 9. Favicon
+* ⚠️ Missing → Warning
+* ✅ Present → OK
 
-*(Optional)*
-**How to fetch:**
+**What matters:**
 
-* `doc.select("link[rel=icon]").attr("href")`
-* `doc.select("link[rel=shortcut icon]").attr("href")`
-  **What to check:**
-* Exists
-* High-quality (32×32, 64×64)
-* Consistent branding
+* Proper image (1200×630)
+* Clean marketing descriptions
 
 ---
 
-## 10. Hreflang (Optional future feature)
+# 🟦 **5. H1**
 
-**How to fetch:** `doc.select("link[rel=alternate][hreflang]")`
-**What to check:**
+**How it’s extracted:**
+`doc.select("h1").text()`
 
-* Exists for multilingual sites
-* Correct language codes (`en`, `fr-BE`, etc.)
-* All languages cross-reference each other
+**Checks performed:**
 
----
+* ⚠️ Missing H1
+* ✅ H1 exists
 
-## 11. Meta Robots
+**What matters:**
 
-**How to fetch:** `doc.select("meta[name=robots]").attr("content")`
-**What to check:**
-
-* Should typically be `index, follow`
-* Ensure no accidental `noindex`, `nofollow`
+* One H1 only
+* Page topic should be obvious
 
 ---
 
-## 12. Viewport
+# 🟦 **6. Favicon**
 
-**How to fetch:** `doc.select("meta[name=viewport]").attr("content")`
-**What to check:**
+**How it’s extracted:**
+`link[rel=icon]`, `shortcut icon`
 
-* Should include: `width=device-width, initial-scale=1`
-* Missing viewport = poor mobile usability
+**Checks performed:**
 
----
+* ⚠️ Missing favicon
+* ✅ Favicon found
 
-## 13. JSON-LD Structured Data
+**What matters:**
 
-**How to fetch:** `doc.select("script[type=application/ld+json]")`
-**What to check:**
-
-* Exists
-* Relevant schemas (Article, Product, FAQ, Organization, Breadcrumb, etc.)
-* Proper JSON structure
+* Clear branding
+* 32×32 or 64×64
 
 ---
 
-## 14. Twitter Tags
+# 🔤 **7. Hreflang Tags (Multilingual Sites)**
 
-**How to fetch:**
+`link[rel=alternate][hreflang]`
 
-* Title: `doc.select("meta[name=twitter:title]").attr("content")`
-* Description: `doc.select("meta[name=twitter:description]").attr("content")`
-* Image: `doc.select("meta[name=twitter:image]").attr("content")`
-  **What to check:**
-* Exists
-* Consistent with OG tags
+**Checks performed:**
+
+* ⚠️ No hreflangs detected
+* ✅ Hreflang(s) found
+
+**What matters:**
+
+* Cross-language linking
+* Correct ISO language codes
+
+---
+
+# 🔒 **8. Robots Meta Tag**
+
+`meta[name=robots]`
+
+**Checks performed:**
+
+* ❌ Contains `noindex` → **Critical**
+* ✅ Safe robots tag
+
+**What matters:**
+
+* Pages must be indexable
+* Avoid accidental noindex
+
+---
+
+# 📱 **9. Viewport Meta Tag**
+
+`meta[name=viewport]`
+
+**Checks performed:**
+
+* ⚠️ Missing or not mobile-friendly
+* ✅ Correct viewport tag
+
+**What matters:**
+
+* Mobile friendliness
+* Required for responsive design
+
+---
+
+# 📚 **10. JSON-LD Structured Data**
+
+`script[type=application/ld+json]`
+
+**Checks performed:**
+
+* ⚠️ No structured data
+* ✅ One or more JSON-LD blocks
+
+**What matters:**
+
+* Richer Google results
+* Correct schema types:
+
+  * `Organization`
+  * `Article`
+  * `Product`
+  * `FAQPage`
+  * `BreadcrumbList`
+
+---
+
+# 🐦 **11. Twitter Card Tags**
+
+### Title
+
+`meta[name=twitter:title]`
+
+### Description
+
+`meta[name=twitter:description]`
+
+### Image
+
+`meta[name=twitter:image]`
+
+**Checks performed:**
+
+* ⚠️ Missing → Warning
+* ✅ Exists → OK
+
+**What matters:**
+
+* Consistency with OG tags
 * Prefer `summary_large_image`
 
 ---
 
-## 16. Internal Links
+# 🔗 **12. Internal Links**
 
-**How to fetch:** `doc.select("a[href^='/']")`
-**What to check:**
+**How it’s extracted:**
+Count of internal links scraped
 
-* Number of internal links
-* Good internal linking → better SEO
-* Compare coverage vs reference
+**Checks performed:**
 
----
+* ⚠️ Less than five internal links
+* ✅ Healthy linking (≥ 5)
 
-## 17. External Links
+**What matters:**
 
-**How to fetch:** `doc.select("a[href^='http']")`
-**What to check:**
-
-* Number of external links
-* Should not rely on low-quality or broken links
+* Strong internal structure
+* Good topic distribution
 
 ---
 
-## 18. Images & Alt Text
+# 🌍 **13. External Links**
 
-**How to fetch:**
+**Checks performed:**
 
-* All images: `doc.select("img")`
-* Alt: `doc.select("img").attr("alt")`
-  **What to check:**
-* Missing alt attributes
-* Compare ratio of missing alt vs reference
-* Accessibility + SEO
+* ⚠️ No external links found
+* ✅ External links present
 
----
+**Why:**
 
-## 19. Page Word Count
-
-**How to fetch:**
-
-```java
-doc.body().text().split("\\s+").length;
-```
-
-**What to check:**
-
-* Low content = weak SEO
-* Compare total words vs reference page
-* Useful coaching metric
+* External links boost trust
+* Should link to authoritative sources
 
 ---
 
-## 20. Apple Touch Icon
+# 🖼 **14. Images & Missing Alt Text**
 
-**How to fetch:** `doc.select("link[rel=apple-touch-icon]").attr("href")`
-**What to check:**
+**How it’s extracted:**
+`img` elements & alt attributes
 
-* Exists
-* High-resolution brand icon
-* Better mobile appearance when saved to home screen
+**Checks performed:**
+
+* ⚠️ Missing alt attributes detected
+* ✅ All alt text present
+
+**What matters:**
+
+* Accessibility
+* Image context for search engines
+
+---
+
+# ✍️ **15. Word Count**
+
+`doc.body().text().split("\\s+")`
+
+**Checks performed:**
+
+* ⚠️ Low content (< 300 words)
+* ✅ Healthy word count
+
+**Why:**
+
+* Thin content harms SEO
+* Longer content improves ranking potential
