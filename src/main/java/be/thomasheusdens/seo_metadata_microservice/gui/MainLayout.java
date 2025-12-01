@@ -8,6 +8,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.router.RouterLink;
 
 public class MainLayout extends AppLayout {
 
@@ -24,11 +25,8 @@ public class MainLayout extends AppLayout {
                 .set("font-size", "1.5rem")
                 .set("font-weight", "700")
                 .set("padding", "0.5rem 1rem")
-                //.set("background", "linear-gradient(135deg, #667eea 0%, #764ba2 100%)")
                 .set("border-radius", "20px")
-                .set("-webkit-background-clip", "text")
-                .set("-webkit-text-fill-color", "linear-gradient(135deg, #667eea 0%, #764ba2 100%)")
-                .set("background-clip", "text")
+                .set("-webkit-text-fill-color", "black")
                 .set("letter-spacing", "-0.5px");
 
         LogoutButton logoutButton = new LogoutButton();
@@ -70,6 +68,9 @@ public class MainLayout extends AppLayout {
                 .set("border-bottom", "1px solid var(--lumo-contrast-10pct)");
 
         addToNavbar(toggle, logo, usernameDisplay, logoutButton, loginButton, registerButton);
+
+        // ADDED: Navigation drawer with home link
+        createDrawerContent();
 
         // Add spacing for navbar items
         getElement().executeJs("""
@@ -120,5 +121,53 @@ public class MainLayout extends AppLayout {
                 registerButton.getElement(),
                 logoutButton.getElement()
         );
+    }
+
+    /**
+     * ADDED: Creates the navigation drawer with links to accessible pages
+     */
+    private void createDrawerContent() {
+        // Create home link
+        RouterLink homeLink = new RouterLink("Home", HomeView.class);
+        homeLink.getStyle()
+                .set("display", "flex")
+                .set("align-items", "center")
+                .set("padding", "0.75rem 1rem")
+                .set("text-decoration", "none")
+                .set("color", "var(--lumo-contrast-90pct)")
+                .set("border-radius", "8px")
+                .set("transition", "all 0.2s ease")
+                .set("font-weight", "500")
+                .set("margin", "0.25rem 0");
+
+        // Add icon to home link
+        homeLink.getElement().insertChild(0, VaadinIcon.HOME.create().getElement());
+        homeLink.getElement().getChild(0).getStyle()
+                .set("margin-right", "0.75rem")
+                .set("color", "#667eea");
+
+        // Hover effect
+        homeLink.getElement().executeJs("""
+            this.addEventListener('mouseenter', () => {
+                this.style.background = 'var(--lumo-contrast-5pct)';
+                this.style.transform = 'translateX(4px)';
+            });
+            this.addEventListener('mouseleave', () => {
+                this.style.background = 'transparent';
+                this.style.transform = 'translateX(0)';
+            });
+        """);
+
+        // Style the drawer
+        addToDrawer(homeLink);
+
+        // Additional drawer styling
+        getElement().executeJs("""
+            const drawer = this.shadowRoot?.querySelector('[part="drawer"]');
+            if (drawer) {
+                drawer.style.padding = '1rem';
+                drawer.style.background = 'var(--lumo-base-color)';
+            }
+        """);
     }
 }

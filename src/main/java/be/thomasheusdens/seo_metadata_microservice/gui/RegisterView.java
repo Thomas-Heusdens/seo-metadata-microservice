@@ -34,9 +34,11 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
         setAlignItems(Alignment.CENTER);
         setPadding(false);
         setSpacing(false);
+
+        // FIXED: Changed from linear-gradient to ensure it extends beyond viewport
         getStyle()
                 .set("background", "linear-gradient(135deg, #667eea15 0%, #764ba215 100%)")
-                .set("min-height", "100vh");
+                .set("min-height", "100%");  // Changed from 100vh to 100%
 
         H2 title = new H2("Create Your Account");
         title.getStyle()
@@ -194,7 +196,7 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
             if (saved === "dark") {
                 document.documentElement.setAttribute("theme", "dark");
             }
-           \s
+           
             const style = document.createElement('style');
             style.textContent = `
                 @keyframes slideUp {
@@ -209,7 +211,7 @@ public class RegisterView extends VerticalLayout implements BeforeEnterObserver 
                 }
             `;
             document.head.appendChild(style);
-       \s""");
+        """);
     }
 
     // ------------------------------------

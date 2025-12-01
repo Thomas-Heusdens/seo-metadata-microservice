@@ -12,6 +12,8 @@ This service uses **Jsoup**, **Hibernate**, and **Spring Security** to scrape, s
 - Hibernate / JPA (MySQL)
 - Jsoup (HTML parsing)
 - Vaadin dashboard
+- SEO Metadata
+- Lombok
 
 ---
 
@@ -99,6 +101,10 @@ DB_URL=jdbc:mysql://host:3306/db
 DB_USERNAME=yourusername
 DB_PASSWORD=yourpassword
 JWT_SECRET_KEY=yourverylongsecretkey
+GOOGLE_CLIENT_ID=yourid
+GOOGLE_CLIENT_SECRET=yoursecret
+GITHUB_CLIENT_ID=yourid
+GITHUB_CLIENT_SECRET=yoursecret
 ```
 
 (Ensure `.env` is in `.gitignore`.)
@@ -180,3 +186,4 @@ Feel free to reach out for collaboration, feedback, or contributions.
 13. [JSON decoding](https://developer.mozilla.org/en-US/docs/Web/API/Window/atob)
 14. [Vaadin basics](https://www.youtube.com/watch?v=67oJxPRa3Mg)
 15. [Vaadin advanced topics](https://vaadin.com/docs/latest/flow)
+16. [OAuth 2.0 Login with GitHub and Google](https://www.youtube.com/watch?v=us0VjFiHogo)

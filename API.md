@@ -219,3 +219,36 @@ GET /api/scraper/extract?url=https://skwd.be
 ```java
 @PreAuthorize("isAuthenticated()")
 ```
+
+---
+
+# 🧪 SEO API (`/api/seo`)
+
+Endpoints for extracting metadata from any public webpage.
+
+---
+
+## 🟦 **GET /api/scraper/analyze**
+
+Uses the api/scraper/extract api and applies the logic on the retrieved content to give feedback.
+
+### Example Request:
+
+```
+GET /api/seo/analyze?url=https://skwd.be
+```
+
+### Example Response (shortened):
+
+```json
+{
+
+}
+```
+
+**Access:**
+🔒 Requires authentication
+
+```java
+@PreAuthorize("isAuthenticated()")
+```

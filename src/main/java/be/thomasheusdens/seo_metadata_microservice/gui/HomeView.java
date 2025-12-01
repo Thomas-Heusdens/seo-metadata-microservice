@@ -235,17 +235,20 @@ public class HomeView extends VerticalLayout {
     private void handleScan() {
         getElement().executeJs("""
             const token = sessionStorage.getItem("accessToken");
-           \s
+    
             if (!token) {
                 window.location.href = "/login";
                 return;
             }
-
+    
             const url = $0.value;
-            if (!url) return;
-
-            // Later redirect to analysis view
+            if (!url || !url.startsWith("http")) {
+                alert("Please enter a valid URL starting with http:// or https://");
+                return;
+            }
+    
+            // NEW: Redirect to analysis view
             window.location.href = "/analysis?url=" + encodeURIComponent(url);
-       \s""", urlField.getElement());
+        """, urlField.getElement());
     }
 }

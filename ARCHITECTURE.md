@@ -35,6 +35,9 @@ seo-metadata-microservice/
  │         ├── TokenRefreshException.java         # Exception handling of Refresh Tokens
  │         ├── TokenRefreshRequest.java           # DTO: Refresh token
  │         └── TokenRefreshResponse.java          # DTO: Refresh token, access token and token type
+ │    ├── oauth2/
+ │         ├── CustomOAuth2UserService.java       # Handles new and already existing users connecting with Google
+ │         ├── OAuth2Config.java                  # JPA repo for RefreshToken
  │    ├── AuthController.java            # Handles /api/auth/signin and /api/auth/register
  │    ├── LoginRequest.java              # DTO: login username + password
  │    ├── LoginResponse.java             # DTO: username, roles, JWT token
@@ -64,7 +67,8 @@ seo-metadata-microservice/
  │    ├── HomeView.java                  # Contains logic and styling of homepage
  │    ├── LoginView.java                 # Contains logic and styling of login form
  │    ├── MainLayout.java                # Contains the navigation
- │    └── RegisterView.java              # Contains logic and styling of register form
+ │    ├── RegisterView.java              # Contains logic and styling of register form
+ │    └── SeoAnalysisView.java           # Displays the result of the fetch to api/seo/analyze
  │
  ├── SeoMetadataMicroserviceApplication.java
  ├── application.properties
@@ -152,7 +156,7 @@ Spring Data JPA automatically implements these interfaces.
 
 ## **3. Services (Business Logic Layer)**
 
-`UserService`, `RoleService`and `RefreshTokenService` contain:
+`UserService`, `RoleService`, `RefreshTokenService`, `ScraperService`, and `SeoAnalysisService` contain:
 
 - business logic
 - validation
@@ -177,7 +181,7 @@ This keeps controllers thin and maintainable.
 - `POST /api/auth/refresh`
 - `POST /api/auth/logout`
 - `GET /api/scraper/extract`
-- `GET /api/scraper/analyze`
+- `GET /api/seo/analyze`
 ---
 
 ## **5. Configuration (Spring Boot / Security)**

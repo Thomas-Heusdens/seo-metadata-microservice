@@ -73,6 +73,7 @@ public class SecurityConfiguration {
                                 "/oauth2/**",
                                 "/",
                                 "/login",
+                                "/analysis",
                                 "/register",
 
                                 "/VAADIN/**",

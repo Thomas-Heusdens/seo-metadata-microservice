@@ -10,9 +10,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class SeoAnalysisResult {
-
     private String url;
-
-    private List<String> warnings;
-    private List<String> positives;
+    private List<SeoCheck> checks;
 }
